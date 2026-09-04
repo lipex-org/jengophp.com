@@ -3,10 +3,10 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Jengo",
   description: "The CodeIgniter 4 Powerhouse",
-  
+
   themeConfig: {
     logo: '/logo.png', // We can add a logo later
-    
+
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/getting-started' },
@@ -52,5 +52,6 @@ export default defineConfig({
       message: 'Released under the MIT License.',
       copyright: 'Copyright © 2026-present JengoPHP'
     }
-  }
+  },
+  base: './'
 })
