@@ -53,5 +53,5 @@ export default defineConfig({
       copyright: 'Copyright © 2026-present JengoPHP'
     }
   },
-  base: './'
+  base: 'https://lipex-org.github.io/jengophp.com/'
 })
