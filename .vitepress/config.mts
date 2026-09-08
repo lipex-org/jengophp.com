@@ -36,8 +36,12 @@ export default defineConfig({
           text: 'Ecosystem',
           items: [
             { text: 'jengo/base', link: '/packages/base' },
-            { text: 'jengo/inertia', link: '/packages/inertia' },
+            { text: 'jengo/auth', link: '/packages/auth' },
+            { text: 'jengo/api', link: '/packages/api' },
+            { text: 'jengo/ai', link: '/packages/ai' },
+            { text: 'jengo/pdf', link: '/packages/pdf' },
             { text: 'jengo/schema', link: '/packages/schema' },
+            { text: 'jengo/inertia', link: '/packages/inertia' },
             { text: '@jengo/vite', link: '/packages/vite-plugin' }
           ]
         }
