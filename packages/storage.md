@@ -68,30 +68,30 @@ class Storage extends BaseConfig
 
         's3' => [
             'driver'                  => 's3',
-            'key'                     => env('AWS_ACCESS_KEY_ID', ''),
-            'secret'                  => env('AWS_SECRET_ACCESS_KEY', ''),
-            'region'                  => env('AWS_DEFAULT_REGION', 'us-east-1'),
-            'bucket'                  => env('AWS_BUCKET', ''),
-            'url'                     => env('AWS_URL', ''),
-            'endpoint'                => env('AWS_ENDPOINT', ''),
+            'key'                     => '',
+            'secret'                  => '',
+            'region'                  => 'us-east-1',
+            'bucket'                  => '',
+            'url'                     => '',
+            'endpoint'                => '',
             'use_path_style_endpoint' => false,
         ],
 
         'r2' => [
             'driver'                  => 's3',
-            'key'                     => env('R2_ACCESS_KEY_ID', ''),
-            'secret'                  => env('R2_SECRET_ACCESS_KEY', ''),
+            'key'                     => '',
+            'secret'                  => '',
             'region'                  => 'auto',
-            'bucket'                  => env('R2_BUCKET', ''),
-            'url'                     => env('R2_PUBLIC_URL', ''),
-            'endpoint'                => env('R2_ENDPOINT', ''),
+            'bucket'                  => '',
+            'url'                     => '',
+            'endpoint'                => '',
             'use_path_style_endpoint' => false,
         ],
 
         'minio' => [
             'driver'                  => 's3',
-            'key'                     => env('MINIO_ROOT_USER', 'minioadmin'),
-            'secret'                  => env('MINIO_ROOT_PASSWORD', 'minioadmin'),
+            'key'                     => 'minioadmin',
+            'secret'                  => 'minioadmin',
             'region'                  => 'us-east-1',
             'bucket'                  => 'app-bucket',
             'endpoint'                => 'http://127.0.0.1:9000',
@@ -99,6 +99,42 @@ class Storage extends BaseConfig
         ],
     ];
 }
+```
+
+### Environment Configuration (`.env`)
+
+CodeIgniter 4 automatically maps environment variables to configuration class properties using dot notation matching the class name and property paths. You do not need to call `env()` within your configuration files.
+
+Define overrides directly in your root `.env` file:
+
+```ini
+# Storage Settings
+Storage.default = 'local'
+Storage.signingKey = 'your-32-character-secret-key'
+Storage.imageDriver = 'gd'
+
+# AWS S3 Disk Configuration
+Storage.disks.s3.key = 'your-aws-access-key-id'
+Storage.disks.s3.secret = 'your-aws-secret-access-key'
+Storage.disks.s3.region = 'us-east-1'
+Storage.disks.s3.bucket = 'your-s3-bucket-name'
+Storage.disks.s3.url = 'https://your-s3-bucket-name.s3.amazonaws.com'
+
+# Cloudflare R2 Disk Configuration
+Storage.disks.r2.key = 'your-r2-access-key-id'
+Storage.disks.r2.secret = 'your-r2-secret-access-key'
+Storage.disks.r2.region = 'auto'
+Storage.disks.r2.bucket = 'your-r2-bucket-name'
+Storage.disks.r2.endpoint = 'https://<account-id>.r2.cloudflarestorage.com'
+Storage.disks.r2.url = 'https://cdn.yourdomain.com'
+
+# MinIO Local S3 Disk Configuration
+Storage.disks.minio.key = 'minioadmin'
+Storage.disks.minio.secret = 'minioadmin'
+Storage.disks.minio.region = 'us-east-1'
+Storage.disks.minio.bucket = 'app-bucket'
+Storage.disks.minio.endpoint = 'http://127.0.0.1:9000'
+Storage.disks.minio.use_path_style_endpoint = true
 ```
 
 ---
