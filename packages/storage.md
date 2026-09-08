@@ -27,6 +27,8 @@ Install via Composer:
 composer require jengo/storage
 ```
 
+> **Prerequisite:** `jengo/storage` requires either the **GD** (`ext-gd`) or **Imagick** (`ext-imagick`) extension to be installed and enabled in your PHP runtime.
+
 Connect the public storage symlink:
 
 ```bash
@@ -49,8 +51,6 @@ class Storage extends BaseConfig
     public string $signingKey = '';
 
     public string $signedRoutePrefix = 'storage/signed';
-
-    public string $imageDriver = 'gd'; // 'gd' or 'imagick'
 
     public array $disks = [
         'local' => [
@@ -109,32 +109,31 @@ Define overrides directly in your root `.env` file:
 
 ```ini
 # Storage Settings
-Storage.default = 'local'
-Storage.signingKey = 'your-32-character-secret-key'
-Storage.imageDriver = 'gd'
+storage.default = 'local'
+storage.signingKey = 'your-32-character-secret-key'
 
 # AWS S3 Disk Configuration
-Storage.disks.s3.key = 'your-aws-access-key-id'
-Storage.disks.s3.secret = 'your-aws-secret-access-key'
-Storage.disks.s3.region = 'us-east-1'
-Storage.disks.s3.bucket = 'your-s3-bucket-name'
-Storage.disks.s3.url = 'https://your-s3-bucket-name.s3.amazonaws.com'
+storage.disks.s3.key = 'your-aws-access-key-id'
+storage.disks.s3.secret = 'your-aws-secret-access-key'
+storage.disks.s3.region = 'us-east-1'
+storage.disks.s3.bucket = 'your-s3-bucket-name'
+storage.disks.s3.url = 'https://your-s3-bucket-name.s3.amazonaws.com'
 
 # Cloudflare R2 Disk Configuration
-Storage.disks.r2.key = 'your-r2-access-key-id'
-Storage.disks.r2.secret = 'your-r2-secret-access-key'
-Storage.disks.r2.region = 'auto'
-Storage.disks.r2.bucket = 'your-r2-bucket-name'
-Storage.disks.r2.endpoint = 'https://<account-id>.r2.cloudflarestorage.com'
-Storage.disks.r2.url = 'https://cdn.yourdomain.com'
+storage.disks.r2.key = 'your-r2-access-key-id'
+storage.disks.r2.secret = 'your-r2-secret-access-key'
+storage.disks.r2.region = 'auto'
+storage.disks.r2.bucket = 'your-r2-bucket-name'
+storage.disks.r2.endpoint = 'https://<account-id>.r2.cloudflarestorage.com'
+storage.disks.r2.url = 'https://cdn.yourdomain.com'
 
 # MinIO Local S3 Disk Configuration
-Storage.disks.minio.key = 'minioadmin'
-Storage.disks.minio.secret = 'minioadmin'
-Storage.disks.minio.region = 'us-east-1'
-Storage.disks.minio.bucket = 'app-bucket'
-Storage.disks.minio.endpoint = 'http://127.0.0.1:9000'
-Storage.disks.minio.use_path_style_endpoint = true
+storage.disks.minio.key = 'minioadmin'
+storage.disks.minio.secret = 'minioadmin'
+storage.disks.minio.region = 'us-east-1'
+storage.disks.minio.bucket = 'app-bucket'
+storage.disks.minio.endpoint = 'http://127.0.0.1:9000'
+storage.disks.minio.use_path_style_endpoint = true
 ```
 
 ---
@@ -286,7 +285,7 @@ class MediaController extends Controller
 
 ## Image Transformation Pipeline
 
-Manipulate stored images via a fluent API without external heavyweight dependencies:
+Manipulate stored images via a fluent API without external heavyweight dependencies. The pipeline automatically selects the best available driver at runtime (preferring `Imagick` if installed, otherwise utilizing `GD`), requiring zero manual driver configuration.
 
 ```php
 use Jengo\Storage\Storage;
