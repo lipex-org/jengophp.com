@@ -39,6 +39,7 @@ export default defineConfig({
             { text: 'jengo/auth', link: '/packages/auth' },
             { text: 'jengo/api', link: '/packages/api' },
             { text: 'jengo/ai', link: '/packages/ai' },
+            { text: 'jengo/storage', link: '/packages/storage' },
             { text: 'jengo/pdf', link: '/packages/pdf' },
             { text: 'jengo/schema', link: '/packages/schema' },
             { text: 'jengo/inertia', link: '/packages/inertia' },
