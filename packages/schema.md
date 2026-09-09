@@ -287,14 +287,34 @@ $nextPage = query(UserFileSchema::class)
 
 ### 3. Pagination Clamping
 
-Prevent empty screens when users request pages out of range:
+Prevent empty screens when users request out-of-range pages (e.g. after deleting records or following a stale URL).
+
+By default, clamping is set to `'auto'` context-aware mode:
+- **UI / Web requests** (standard web navigation and Inertia.js requests): Clamping is **enabled by default**, automatically snapping out-of-bounds page requests to the last valid page.
+- **Pure API requests** (`/api/*` endpoints, `Accept: application/json` without Inertia, or cursor pagination): Clamping is **disabled by default**, allowing API clients and infinite scroll components to receive empty datasets (`data: []`) to know when to stop fetching.
 
 ```php
-// If there are only 5 pages and page 99 is requested:
+// In a UI/Inertia controller, requesting page 99 when only 5 pages exist
+// automatically clamps to page 5:
 $result = query(UserSchema::class)
-    ->clamp(true) // Automatically clamps request to page 5
     ->paginate(page: 99, limit: 10)
     ->get();
+
+// Clamping transparency metadata
+echo $result->pagination->page;          // 5 (actual page returned)
+echo $result->pagination->clamped;       // true
+echo $result->pagination->requestedPage; // 99 (original requested page)
+
+// Explicit overrides:
+query(UserSchema::class)->clamp(false); // Force off (e.g. for infinite scroll)
+query(UserSchema::class)->clamp(true);  // Force on
+```
+
+You can customize the global clamping default in `app/Config/JengoSchema.php`:
+
+```php
+// 'auto' (context-aware), true (always on), or false (always off)
+public bool|string $clamp = 'auto';
 ```
 
 ---
