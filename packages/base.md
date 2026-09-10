@@ -115,3 +115,220 @@ The `jengo:setup` command allows you to progressively enhance your application:
 - `php spark jengo:setup core`: Installs Jengo helpers into the CI4 autoloader.
 - `php spark jengo:setup auth`: Installs **The Gatekeeper** (CodeIgniter Shield with Jengo UI/Inertia stubs).
 - `php spark jengo:setup api`: Installs **The Vault** (JWT support and base API controllers).
+
+---
+
+## Data Mappings
+
+`jengo/base` includes a high-performance, bidirectional data mapping engine (`Jengo\Base\Mapping\Mapper`). It enables seamless mapping between arrays, third-party CodeIgniter 4 entities, generic objects/DTOs, and Jengo entities.
+
+### The Problem It Solves
+
+Third-party CodeIgniter 4 packages (such as CodeIgniter Shield, Myth:Auth, or custom vendor packages) frequently provide their own `Entity` classes extending `CodeIgniter\Entity\Entity`. Because PHP does not support multiple inheritance, application entities cannot extend both the third-party entity and `Jengo\Base\Entities\BaseEntity`.
+
+With the mapping system, you can define a domain entity extending `BaseEntity` (with Sqids ID obfuscation, `$hidden`, `$visible`, and custom casting), and map the third-party entity or raw array into it with zero friction.
+
+### Core Usage
+
+#### Direct Entity Mapping
+
+Any entity extending `BaseEntity` (or using `MappableTrait`) supports static hydration and collection mapping:
+
+```php
+use App\Entities\AppUser;
+
+// 1. Map from a 3rd-party CI4 Entity (e.g. Shield User)
+$shieldUser = $shieldUserModel->find(1);
+$appUser = AppUser::from($shieldUser);
+
+// 2. Map from an associative array
+$appUser = AppUser::from($request->getPost());
+
+// 3. Batch map a collection
+$shieldUsers = $shieldUserModel->findAll();
+$appUsers = AppUser::collect($shieldUsers);
+```
+
+#### Central Mapper Engine
+
+The `Mapper` facade provides decoupled mapping and fluent configuration:
+
+```php
+use Jengo\Base\Mapping\Mapper;
+
+// Standard direct mapping
+$appUser = Mapper::map($shieldUser, AppUser::class);
+
+// Map into an existing entity instance
+Mapper::from($requestData)->into($existingUser);
+
+// Fluent configuration chain
+$appUser = Mapper::from($shieldUser)
+    ->with(['tenant_id' => $tenantId])
+    ->only(['id', 'username', 'email', 'tenant_id'])
+    ->except(['password_hash'])
+    ->pristine(true)
+    ->to(AppUser::class);
+
+// Batch collections
+$appUsers = Mapper::collect($shieldUsers, AppUser::class);
+```
+
+---
+
+### Bi-Directional Synchronization
+
+The mapping engine tracks mapping context and field origin, allowing modified domain entities to sync back to the original source or reconstruct the original entity class.
+
+#### Syncing Back to the Source Instance
+
+```php
+$shieldUser = $shieldUserModel->find(1);
+$appUser = AppUser::from($shieldUser);
+
+// Modify application state
+$appUser->email = 'updated@example.com';
+$appUser->name = 'Jane Doe';
+
+// Sync modified values back into the original $shieldUser instance
+$appUser->syncTo($shieldUser);
+
+// Save through the 3rd-party repository or model
+$shieldUserModel->save($shieldUser);
+```
+
+When no argument is passed to `syncTo()`, the entity automatically updates the captured origin instance:
+
+```php
+$appUser->name = 'Jane Doe';
+$appUser->syncTo(); // Automatically syncs to the captured $shieldUser
+$shieldUserModel->save($shieldUser);
+```
+
+To sync only attributes that were actually modified, pass `onlyChanged: true`:
+
+```php
+$appUser->syncTo($shieldUser, onlyChanged: true);
+```
+
+#### Reconstructing the Original Entity (`toOriginal`)
+
+```php
+// Reconstruct the 3rd-party entity with reversed mappings
+$shieldUser = $appUser->toOriginal();
+$shieldUserModel->save($shieldUser);
+
+// When mapped from an array, toOriginal() exports back to an array
+$data = ['user_id' => 5, 'user_name' => 'alex'];
+$user = AppUser::from($data);
+$user->name = 'alex_updated';
+
+$originalArray = $user->toOriginal();
+// ['user_id' => 5, 'user_name' => 'alex_updated']
+```
+
+---
+
+### PHP 8 Mapping Attributes
+
+Declare column renaming, exclusions, custom transformations, and nested relationships directly on entity classes:
+
+```php
+namespace App\Entities;
+
+use Jengo\Base\Entities\BaseEntity;
+use Jengo\Base\Attributes\Mapping\MapFrom;
+use Jengo\Base\Attributes\Mapping\MapTo;
+use Jengo\Base\Attributes\Mapping\MapIgnore;
+use Jengo\Base\Attributes\Mapping\MapCast;
+use Jengo\Base\Attributes\Mapping\MapWith;
+
+class AppUser extends BaseEntity
+{
+    #[MapFrom('user_id')]
+    #[MapTo('user_id')]
+    public ?int $id = null;
+
+    #[MapFrom('user_email')]
+    #[MapTo('user_email')]
+    public ?string $email = null;
+
+    #[MapWith(PhoneTransformer::class)]
+    public ?string $phone = null;
+
+    #[MapIgnore]
+    public ?string $internalCache = null;
+
+    #[MapCast(AddressEntity::class)]
+    public ?AddressEntity $address = null;
+
+    #[MapCast(RoleEntity::class, isCollection: true)]
+    public array $roles = [];
+}
+```
+
+#### Class-Level Dynamic Attribute Mapping
+
+For CodeIgniter 4 entities that rely on dynamic `$attributes` without declared PHP properties, use class-level attributes:
+
+```php
+namespace App\Entities;
+
+use Jengo\Base\Entities\BaseEntity;
+use Jengo\Base\Attributes\Mapping\MapProperty;
+use Jengo\Base\Attributes\Mapping\MapSource;
+
+#[MapSource(\CodeIgniter\Shield\Entities\User::class)]
+#[MapProperty(target: 'email', source: 'user_email')]
+#[MapProperty(target: 'status', source: 'is_active')]
+class AppUser extends BaseEntity
+{
+}
+```
+
+#### Attribute Reference
+
+| Attribute | Target | Description |
+| :--- | :--- | :--- |
+| `#[MapFrom('column')]` | Property / Method | Reads value from the specified source column or key. |
+| `#[MapTo('column')]` | Property / Method | Sets destination key during reverse sync or export. |
+| `#[MapProperty(target, source)]` | Class | Maps source key to target attribute for dynamic entity attributes. |
+| `#[MapIgnore]` | Property | Excludes property from mapping (`both`, `to_target`, or `to_source`). |
+| `#[MapCast(Target::class)]` | Property | Hydrates nested child entity or collection (`isCollection: true`). |
+| `#[MapWith(Transformer::class)]` | Property | Applies custom `ValueTransformerInterface` for forward and reverse transforms. |
+| `#[MapSource(Source::class)]` | Class | Sets the default paired origin class for `toOriginal()`. |
+
+---
+
+### Custom Transformers
+
+Implement `Jengo\Base\Mapping\Contracts\ValueTransformerInterface` to provide custom bidirectional transformations:
+
+```php
+namespace App\Transformers;
+
+use Jengo\Base\Mapping\Contracts\ValueTransformerInterface;
+
+class JsonArrayTransformer implements ValueTransformerInterface
+{
+    public function transform(mixed $value, string $sourceKey, object|array $source): mixed
+    {
+        return is_string($value) ? json_decode($value, true) : (array) $value;
+    }
+
+    public function reverse(mixed $value, string $targetKey, object|array $target): mixed
+    {
+        return json_encode($value);
+    }
+}
+```
+
+---
+
+### Performance Architecture
+
+The mapping system is engineered for fast-run batch processing:
+- **Static Reflection Caching**: Property mappings, attributes, and transformers are evaluated once per class lifecycle and cached in static memory. Subsequent hydrations execute in O(1) time without reflection overhead.
+- **Direct Entity Extraction**: For CodeIgniter 4 entities, raw data is read directly via `$source->toRawArray()`, avoiding unnecessary getter loops.
+- **Single-Pass Collection Hydration**: Efficiently maps thousands of records with minimal memory allocations.
+
