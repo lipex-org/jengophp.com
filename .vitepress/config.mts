@@ -27,21 +27,31 @@ export default defineConfig({
           items: [
             { text: 'The Gatekeeper (Auth)', link: '/guide/auth' },
             { text: 'The Vault (API)', link: '/guide/api' },
-            { text: 'Database Automation', link: '/guide/database' }
+            { text: 'Database & Schemas', link: '/guide/database' }
           ]
         }
       ],
       '/packages/': [
         {
-          text: 'Ecosystem',
+          text: 'Foundational & Core',
           items: [
             { text: 'jengo/base', link: '/packages/base' },
-            { text: 'jengo/auth', link: '/packages/auth' },
-            { text: 'jengo/api', link: '/packages/api' },
-            { text: 'jengo/ai', link: '/packages/ai' },
-            { text: 'jengo/storage', link: '/packages/storage' },
-            { text: 'jengo/pdf', link: '/packages/pdf' },
             { text: 'jengo/schema', link: '/packages/schema' },
+            { text: 'jengo/storage', link: '/packages/storage' },
+            { text: 'jengo/auth', link: '/packages/auth' },
+            { text: 'jengo/api', link: '/packages/api' }
+          ]
+        },
+        {
+          text: 'Enterprise & Media',
+          items: [
+            { text: 'jengo/ai', link: '/packages/ai' },
+            { text: 'jengo/pdf', link: '/packages/pdf' }
+          ]
+        },
+        {
+          text: 'Frontend & Tooling',
+          items: [
             { text: 'jengo/inertia', link: '/packages/inertia' },
             { text: '@jengo/vite', link: '/packages/vite-plugin' }
           ]

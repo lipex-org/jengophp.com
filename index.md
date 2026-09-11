@@ -19,6 +19,12 @@ features:
     details: Generate a complete application—with Tailwind, Vite, and SQLite—in a single command.
   - title: Modern SPAs
     details: First-class support for React, Vue, and Svelte via Inertia.js integrations.
+  - title: High-Performance Data Mappings
+    details: Bidirectional mapping between arrays, third-party CodeIgniter 4 entities, and Jengo domain entities with PHP 8 attributes.
+  - title: Declarative Schemas & Queries
+    details: Type-safe query builder with relationship derivation, context-aware pagination clamping, and TypeScript generator.
+  - title: Universal Cloud Storage
+    details: Flysystem-backed multi-disk storage (S3, R2, MinIO, Local) with HMAC signed URLs, direct browser uploads, and image pipeline.
   - title: The Gatekeeper (Auth)
     details: Unified authentication and Vima RBAC/ABAC authorization engine with Universal Guard, session/token fallback, and multi-factor actions.
   - title: The Vault (API)
