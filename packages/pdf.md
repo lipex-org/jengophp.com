@@ -232,6 +232,167 @@ Features included in the preview canvas:
   - `Ctrl + S` / `Cmd + S`: Direct PDF download.
   - `+` / `-`: Zoom in / Zoom out.
   - `0`: Reset Zoom.
+  - `F` / `f`: Toggle Slide-Over Filter Drawer.
+  - `Esc`: Close Slide-Over Filter Drawer.
+
+---
+
+## Interactive Preview Filtering & Slide-Over Drawer
+
+`jengo/pdf` allows attaching dynamic filter fields to any PDF document or report. In preview mode, these filters render as a slide-over drawer on the right side of the canvas with a backdrop overlay. Modifying any filter in the drawer triggers background AJAX requests (debounced by 300ms) with request cancellation, recomputes the data, updates the underlying HTML, and repaginates the physical preview sheets without reloading the iframe or resetting the user zoom level.
+
+### Filter Types & Factory
+
+Use `Jengo\Pdf\Filtering\Filter` (or `Jengo\Pdf\Support\Filter`) to define filter controls:
+
+```php
+use Jengo\Pdf\Support\Filter;
+
+$filters = [
+    // Free text input
+    Filter::text('customer', 'Customer Name', placeholder: 'Filter by client...'),
+
+    // Search input
+    Filter::search('search', 'Search Records', placeholder: 'Type keywords...'),
+
+    // Single date picker
+    Filter::date('start_date', 'Effective Date', default: '2026-01-01'),
+
+    // Date range picker (from / to)
+    Filter::dateRange('date_range', 'Date Range', default: [
+        'from' => '2026-01-01',
+        'to'   => '2026-03-31',
+    ]),
+
+    // Dropdown select (single or multi-select)
+    Filter::select('status', 'Status', [
+        'all'     => 'All Statuses',
+        'paid'    => 'Paid',
+        'pending' => 'Pending',
+        'void'    => 'Void',
+    ], default: 'all'),
+
+    // Toggle switch
+    Filter::toggle('include_archived', 'Include Archived', default: false),
+
+    // Numeric bounds range (min / max)
+    Filter::numberRange('amount_range', 'Amount Range', default: [
+        'min' => 100,
+        'max' => 5000,
+    ], min: 0, max: 10000, step: 50),
+];
+```
+
+### Fluent Setters
+
+All filter fields support fluent configuration:
+
+```php
+Filter::select('tier', 'Customer Tier', ['bronze' => 'Bronze', 'silver' => 'Silver', 'gold' => 'Gold'])
+    ->placeholder('Select tier')
+    ->default('gold')
+    ->multiple(true);
+
+Filter::numberRange('price', 'Price Bounds')
+    ->min(10.0)
+    ->max(500.0)
+    ->step(5.0);
+```
+
+### Attaching Filters & the `onFilter` Handler
+
+Attach filters using `->withFilters()` and define a reactive callback via `->onFilter()`. The callback receives the submitted filter values array and the `PdfDocument` instance, giving you full control to mutate data, orientation, watermarks, or styling dynamically:
+
+```php
+use Jengo\Pdf\Pdf;
+use Jengo\Pdf\PdfDocument;
+use Jengo\Pdf\Support\Filter;
+
+return Pdf::view('reports/sales_summary', ['records' => $initialRecords])
+    ->withFilters([
+        Filter::search('query', 'Search Records'),
+        Filter::select('region', 'Sales Region', [
+            'all'   => 'All Regions',
+            'emea'  => 'EMEA',
+            'apac'  => 'APAC',
+            'na'    => 'North America',
+        ]),
+        Filter::dateRange('period', 'Reporting Period'),
+    ])
+    ->onFilter(function (array $filters, PdfDocument $doc): void {
+        $query = model('SalesModel');
+
+        if (!empty($filters['query'])) {
+            $query->like('description', $filters['query']);
+        }
+
+        if (!empty($filters['region']) && $filters['region'] !== 'all') {
+            $query->where('region', $filters['region']);
+        }
+
+        if (!empty($filters['period']['from'])) {
+            $query->where('created_at >=', $filters['period']['from'] . ' 00:00:00');
+        }
+
+        if (!empty($filters['period']['to'])) {
+            $query->where('created_at <=', $filters['period']['to'] . ' 23:59:59');
+        }
+
+        $records = $query->findAll();
+
+        // Mutate document view data
+        $doc->viewData(['records' => $records]);
+
+        // Dynamically adjust orientation or watermark based on filter selections
+        if (count($records) > 50) {
+            $doc->landscape();
+        }
+    })
+    ->preview();
+```
+
+> [!NOTE]
+> When `onFilter()` returns an associative array, the array is automatically merged into `$doc->viewData()`. You can either mutate `$doc` directly or return the updated data array.
+
+### Schema Report Auto-Filters
+
+Schema-driven reports can automatically discover and bind filter controls based on their declared columns using `->withAutoFilters()`:
+
+```php
+use Jengo\Pdf\Pdf;
+use Jengo\Pdf\Schema\Column;
+
+$dataset = model('OrderModel')->findAll();
+
+return Pdf::fromSchema($dataset)
+    ->title('Order Summary Report')
+    ->columns([
+        Column::make('order_num', 'Order #')->width('15%'),
+        Column::make('customer', 'Customer Name')->width('30%'),
+        Column::make('created_at', 'Order Date')->date('Y-m-d')->width('20%'),
+        Column::make('status', 'Status')->badge([
+            'completed' => 'success',
+            'pending'   => 'warning',
+            'cancelled' => 'danger',
+        ])->width('15%'),
+        Column::make('total', 'Total')->currency('USD')->sum()->width('20%'),
+    ])
+    ->withAutoFilters()
+    ->preview();
+```
+
+When `->withAutoFilters()` is called:
+1. A **Search** filter is automatically generated to query all scalar columns.
+2. A **Date Range** filter is created for every column formatted as a date/datetime or named `created_at`, `updated_at`, `date`, etc.
+3. A **Select** filter is created for every column that defines a `badge()` status mapping.
+4. An in-memory filter callback is automatically registered to filter rows and recalculate column aggregates (sums, averages, counts, min, max) in real time.
+
+You can still provide custom `->onFilter()` callbacks or combine explicit filters via `->withFilters([...])` with `->withAutoFilters()`.
+
+### State Synchronization & Direct Downloads
+
+- **URL Synchronization**: Modifying filter inputs synchronizes active filter parameters with the browser query string via `window.history.replaceState`. Refreshing or bookmarking the page preserves all active filter states.
+- **Download Parity**: The preview toolbar "Download PDF" button carries forward all active filter parameters. In addition, calling `->inline()` or `->download()` directly on a filtered document automatically reads matching request query parameters and applies the `onFilter` callback prior to generating the binary PDF output.
 
 ---
 
