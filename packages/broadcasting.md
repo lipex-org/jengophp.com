@@ -1,7 +1,5 @@
 # jengo/broadcasting
 
-> **Status:** Active Development / Experimental (Pre-production) &bull; **Version:** `v0.1.0-alpha`
-
 > [!WARNING]
 > **DEVELOPMENT / EXPERIMENTAL STATUS**
 > This package and its built-in pure-PHP WebSocket daemon (`php spark broadcast:serve`) are currently in **active development and experimental status**.

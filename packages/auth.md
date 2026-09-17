@@ -1,7 +1,5 @@
 # jengo/auth
 
-> **Status:** In Active Development &bull; Pre-Release
-
 `jengo/auth` is a unified authentication and authorization engine for **CodeIgniter 4** and the **Jengo Framework**, powered by **Vima**.
 
 ---

@@ -1,7 +1,5 @@
 # jengo/schema
 
-> **Status:** Production Ready &bull; **Version:** `v1.0.0`
-
 `jengo/schema` is an enterprise declarative querying, relationship derivation, entity hydration, infinite-scrolling cursor pagination, and TypeScript definition generation engine for **CodeIgniter 4** and the **Jengo Framework**.
 
 ---

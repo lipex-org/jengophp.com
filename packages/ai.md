@@ -1,7 +1,5 @@
 # jengo/ai
 
-> **Status:** Production Ready &bull; **Version:** `v1.0.0`
-
 `jengo/ai` is an enterprise-grade, multi-provider generative AI SDK, autonomous agent engine, and vector search toolkit engineered specifically for **CodeIgniter 4** and the **Jengo Framework**.
 
 ---

@@ -1,7 +1,5 @@
 # jengo/api
 
-> **Status:** In Active Development &bull; Pre-Release
-
 `jengo/api` is an automated, configuration-driven REST API and OpenAPI/Swagger engine for **CodeIgniter 4** and the **Jengo Framework**. It provides declarative resource routing, schema-driven querying, atomic bulk transactional writes, validation form mapping, and real-time interactive Swagger documentation.
 
 ---

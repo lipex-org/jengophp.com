@@ -1,7 +1,5 @@
 # jengo/storage
 
-> **Status:** Production Ready &bull; **Version:** `v1.0.0`
-
 `jengo/storage` is a unified filesystem abstraction, asset management, universal temporary signed URL engine, and fluent image processing pipeline for **CodeIgniter 4** and the **Jengo Framework**, powered by League Flysystem v3.
 
 ---

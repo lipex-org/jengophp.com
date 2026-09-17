@@ -1,7 +1,5 @@
 # jengo/pdf
 
-> **Status:** Production Ready &bull; **Version:** `v1.2.0`
-
 `jengo/pdf` is a high-performance, dual-driver PDF generation, document templating, schema reporting, and interactive browser preview engine for **CodeIgniter 4** and the **Jengo Framework**.
 
 ---
