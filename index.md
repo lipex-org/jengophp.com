@@ -33,4 +33,6 @@ features:
     details: Multi-provider LLM engine (OpenAI, Claude, Gemini, DeepSeek, OpenRouter, Ollama) with autonomous tool calling and structured schemas.
   - title: High-Performance PDF Engine
     details: Dual-driver (Dompdf & Chromium) document generator with pre-built invoice templates, schema reports, and interactive browser preview.
+  - title: Real-Time Broadcasting
+    details: Event-driven publish-subscribe engine with zero-daemon Server-Sent Events (SSE) and local WebSocket daemon.
 ---

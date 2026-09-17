@@ -43,6 +43,12 @@ export default defineConfig({
           ]
         },
         {
+          text: 'Real-Time & Networking',
+          items: [
+            { text: 'jengo/broadcasting', link: '/packages/broadcasting' }
+          ]
+        },
+        {
           text: 'Enterprise & Media',
           items: [
             { text: 'jengo/ai', link: '/packages/ai' },
