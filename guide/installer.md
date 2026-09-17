@@ -8,7 +8,10 @@ By default, running `jengo new <app-name>` triggers an interactive wizard. The w
 
 1. **Starter Kit**: Choose between Default Blueprint (Blade-like PHP Views + Tailwind + Vite) or modern SPAs (React 19, Vue 3, Svelte 5 via Inertia.js).
 2. **Package Manager**: Select `npm`, `pnpm`, `yarn`, or `bun`.
-3. **Authentication**: Opt-in to install `jengo/auth` (The Gatekeeper powered by Vima) alongside CodeIgniter Shield.
+3. **Authentication Provider**: Choose between:
+   - `Jengo Auth`: Unified authentication and Vima RBAC/ABAC authorization (`jengo/auth`)
+   - `CodeIgniter Shield`: Official CodeIgniter 4 authentication (`codeigniter4/shield`)
+   - `None`: Lean setup without authentication
 4. **Ecosystem Packages**: Select modular packages to bundle into your application:
    - `jengo/api`: The Vault REST API Suite & OpenAPI
    - `jengo/schema`: Fluent declarative schema builder & TypeScript generator
@@ -23,16 +26,22 @@ By default, running `jengo new <app-name>` triggers an interactive wizard. The w
 
 For automated setups or continuous integration pipelines, pass your preferences directly via command-line flags. The installer will skip prompts for any options provided.
 
-### Example: React SPA with Full Ecosystem
+### Example: React SPA with Jengo Auth and Full Ecosystem
 
 ```bash
-jengo new my-app --kit=react --auth --all --pest --pm=pnpm
+jengo new my-app --kit=react --auth=jengo --all --pest --pm=pnpm
+```
+
+### Example: Using CodeIgniter Shield
+
+```bash
+jengo new my-app --kit=vue --shield --db=sqlite
 ```
 
 ### Example: Lean API Service
 
 ```bash
-jengo new api-service --api --schema --db=sqlite
+jengo new api-service --api --schema --no-auth --db=sqlite
 ```
 
 ### Available Flags
@@ -40,7 +49,8 @@ jengo new api-service --api --schema --db=sqlite
 | Flag | Description | Default |
 | :--- | :--- | :--- |
 | `--kit=<name>` | Starter kit: `default`, `react`, `vue`, or `svelte` | `default` |
-| `--auth` | Install `jengo/auth` and CodeIgniter Shield | `false` |
+| `--auth[=<driver>]` | Authentication provider: `jengo` or `shield` | `false` |
+| `--shield` | Install CodeIgniter Shield (shortcut for `--auth=shield`) | `false` |
 | `--no-auth` | Explicitly skip authentication | `false` |
 | `--all` | Install all ecosystem packages (`api`, `schema`, `storage`, `broadcasting`, `ai`, `pdf`) | `false` |
 | `--api` | Install Jengo API Suite (`jengo/api`) | `false` |
