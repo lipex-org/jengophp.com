@@ -399,6 +399,99 @@ php spark broadcast:serve --host=127.0.0.1 --port=8080
 
 ---
 
+## Frontend Client (`@jengo/broadcasting`)
+
+`@jengo/broadcasting` is the official client library for Jengo and CodeIgniter 4, providing unified real-time event subscriptions over Server-Sent Events (SSE) and WebSockets, with built-in deduplication, automatic reconnection, and reactive hooks for React and Vue.
+
+### Installation
+
+```bash
+npm install @jengo/broadcasting
+```
+
+### Server-Sent Events (SSE) Setup
+
+Zero-daemon streaming directly through CodeIgniter 4's SSE controller:
+
+```ts
+import JengoBroadcaster from '@jengo/broadcasting';
+
+const broadcaster = new JengoBroadcaster({
+    broadcaster: 'sse',
+    endpoint: '/broadcasting/sse',
+    authEndpoint: '/broadcasting/auth',
+});
+
+// Subscribe to a public channel
+broadcaster.channel('orders')
+    .listen('OrderCreated', (event) => {
+        console.log('New Order:', event);
+    });
+```
+
+### WebSockets (Soketi / Pusher / Jengo WS) Setup
+
+```ts
+import JengoBroadcaster from '@jengo/broadcasting';
+
+const broadcaster = new JengoBroadcaster({
+    broadcaster: 'ws',
+    key: 'jengo-app-key',
+    wsHost: window.location.hostname,
+    wsPort: 6001,
+    forceTLS: false,
+    authEndpoint: '/broadcasting/auth',
+});
+
+// Private channel with automatic CI4 CSRF handshake
+broadcaster.private('chat.123')
+    .listen('NewMessage', (message) => {
+        console.log('Message:', message);
+    });
+
+// Presence channel
+broadcaster.join('room.lobby')
+    .here((users) => console.log('Active users:', users))
+    .joining((user) => console.log('Joined:', user))
+    .leaving((user) => console.log('Left:', user));
+```
+
+### React Integration
+
+Import hooks directly from `@jengo/broadcasting/react`:
+
+```tsx
+import { BroadcastingProvider, useChannel, usePresence } from '@jengo/broadcasting/react';
+
+export function ChatRoom({ roomId }: { roomId: string }) {
+    useChannel(`chat.${roomId}`, 'NewMessage', (message) => {
+        console.log('Incoming:', message);
+    });
+
+    const { members } = usePresence(`room.${roomId}`);
+
+    return <div>Online Users: {members.length}</div>;
+}
+```
+
+### Vue 3 Integration
+
+Import composables directly from `@jengo/broadcasting/vue`:
+
+```vue
+<script setup lang="ts">
+import { useChannel, usePresence } from '@jengo/broadcasting/vue';
+
+useChannel('orders', 'OrderCreated', (order) => {
+    console.log('New order:', order);
+});
+
+const { members } = usePresence('room.lobby');
+</script>
+```
+
+---
+
 ## Testing with `Broadcast::fake()`
 
 Use the built-in test fake to assert events without dispatching over sockets:
