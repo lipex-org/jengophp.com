@@ -414,9 +414,9 @@ npm install @jengo/broadcasting
 Zero-daemon streaming directly through CodeIgniter 4's SSE controller:
 
 ```ts
-import JengoBroadcaster from '@jengo/broadcasting';
+import Broadcaster from '@jengo/broadcasting';
 
-const broadcaster = new JengoBroadcaster({
+const broadcaster = new Broadcaster({
     broadcaster: 'sse',
     endpoint: '/broadcasting/sse',
     authEndpoint: '/broadcasting/auth',
@@ -432,9 +432,9 @@ broadcaster.channel('orders')
 ### WebSockets (Soketi / Pusher / Jengo WS) Setup
 
 ```ts
-import JengoBroadcaster from '@jengo/broadcasting';
+import Broadcaster from '@jengo/broadcasting';
 
-const broadcaster = new JengoBroadcaster({
+const broadcaster = new Broadcaster({
     broadcaster: 'ws',
     key: 'jengo-app-key',
     wsHost: window.location.hostname,
