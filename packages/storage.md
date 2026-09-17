@@ -8,6 +8,8 @@
 
 - **Multi-Disk Switching**: Seamlessly manage files across **Local**, **AWS S3**, **Cloudflare R2**, **MinIO**, **Google Cloud Storage**, and in-memory test drivers via a unified API.
 - **Universal Temporary Signed URLs**: Issue expiring download links with automatic HMAC-SHA256 signature verification for local private files and native pre-signed URLs for cloud object storage.
+- **Chunked Multipart File Uploads**: Stream large files in discrete slices with low-memory 64 KB buffered stream concatenation (< 2 MB RAM), SHA-256 integrity verification, and automatic staging cleanup.
+- **Universal Frontend Client (`@jengo/storage`)**: First-class TypeScript client library with concurrency streaming, pause/resume/abort controls, instant previews, real-time speed/ETA metrics, and adapters for React, Vue 3, and Svelte.
 - **Direct-to-Cloud Pre-Signed Uploads**: Generate pre-signed tickets for direct browser-to-S3/R2 uploads, eliminating PHP worker bottlenecks and memory limits on large file transfers.
 - **HTTP Range Streaming**: Built-in streaming controller supporting byte-range requests (`Accept-Ranges: bytes`) for smooth video/audio playback and resumable downloads.
 - **Fluent Image Transformation Engine**: Zero-dependency image pipeline supporting aspect-ratio preserving resize, crop, fit, watermarking, responsive breakpoint variant generation, and modern format transcoding (WebP and AVIF).
@@ -247,7 +249,271 @@ $downloadUrl = Storage::temporaryUrl(
 
 ---
 
-## Direct Browser Pre-Signed Uploads
+## Chunked Multipart File Uploads (Backend)
+
+Handling large file uploads through conventional single-request multipart forms often encounters PHP limits (`upload_max_filesize`, `post_max_size`, memory ceilings, and request timeouts). `jengo/storage` includes built-in backend controllers and routes for chunked, resumable multipart uploads.
+
+### How It Works
+
+1. **Chunk Staging (`POST /storage/chunks/upload`)**:
+   The client generates a unique file session UUID and slices the file into discrete parts (e.g. 2 MB each). Each part is streamed to the backend and saved as an isolated `.part` file in `WRITEPATH . 'storage/temp/chunks/{uuid}/'`. If client checksums are provided, the server verifies each chunk's SHA-256 hash immediately upon receipt.
+
+2. **Stream Assembly (`POST /storage/chunks/assemble`)**:
+   Once all parts have been received, the client requests assembly. The server opens a buffered stream and iterates sequentially through all chunk parts using `stream_copy_to_stream()` with 64 KB buffers. Memory consumption remains constant (< 2 MB) whether assembling a 50 MB video or a 10 GB disk image. The resulting stream is piped directly into the target disk (`public`, `local`, or cloud) via Flysystem's `writeStream()`.
+
+3. **Session Cancellation (`POST /storage/chunks/abort`)**:
+   If a user aborts an upload, the staging directory and all orphaned `.part` files are removed immediately.
+
+4. **Stale Staging Cleanup**:
+   Orphaned chunk directories from interrupted client connections can be pruned via CLI:
+   ```bash
+   php spark storage:cleanup --hours=24
+   ```
+
+### Built-in Endpoints
+
+| Method | Route | Description |
+| :--- | :--- | :--- |
+| `POST` | `/storage/chunks/upload` | Receives individual chunk `.part` file and index |
+| `POST` | `/storage/chunks/assemble` | Verifies chunk completeness and streams into final file |
+| `POST` | `/storage/chunks/abort` | Aborts session and purges staged temporary chunks |
+
+---
+
+## Universal Frontend Client Library (`@jengo/storage`)
+
+`@jengo/storage` is the official, universal TypeScript client package for Jengo Storage. It eliminates frontend upload boilerplate, provides automatic chunk slicing, parallel streaming, pause/resume/abort controls, instant previews, real-time speed metrics, and first-class adapters for React, Vue 3, and Svelte.
+
+### Installation
+
+```bash
+# npm
+npm install @jengo/storage
+
+# pnpm
+pnpm add @jengo/storage
+
+# yarn
+yarn add @jengo/storage
+```
+
+### Vanilla TypeScript / JavaScript Usage
+
+```typescript
+import { ChunkedUploader, createFilePreview } from '@jengo/storage';
+
+const fileInput = document.querySelector<HTMLInputElement>('#fileInput')!;
+
+fileInput.addEventListener('change', async () => {
+    const file = fileInput.files?.[0];
+    if (!file) return;
+
+    // 1. Generate instant client-side preview before transmission
+    const preview = await createFilePreview(file);
+    if (preview.isImage) {
+        console.log(`Image dimensions: ${preview.width}x${preview.height}`);
+    }
+
+    // 2. Instantiate chunked uploader with concurrency and metrics
+    const uploader = new ChunkedUploader(file, {
+        chunkSize: 2 * 1024 * 1024, // 2 MB slices
+        concurrency: 3,             // 3 parallel network streams
+        disk: 'public',             // Destination disk
+        folder: 'uploads/videos',
+        computeChecksums: true,     // Web Crypto SHA-256 verification
+        onProgress: (progress) => {
+            console.log(`${progress.percent}% | ${progress.speed} | ETA: ${progress.remainingSeconds}s`);
+            console.log(`Chunk ${progress.chunkIndex} of ${progress.totalChunks}`);
+        },
+        onStatusChange: (status) => {
+            // 'idle' | 'uploading' | 'paused' | 'assembling' | 'completed' | 'error' | 'aborted'
+            console.log(`Upload status: ${status}`);
+        },
+        onSuccess: (result) => {
+            console.log('File assembled:', result.url);
+            preview.revoke(); // Release browser object URL memory
+        },
+        onError: (err) => {
+            console.error('Upload failed:', err);
+        },
+    });
+
+    // Start transmission
+    await uploader.start();
+
+    // Pause, resume, or abort anytime:
+    // uploader.pause();
+    // await uploader.resume();
+    // await uploader.abort();
+});
+```
+
+### Framework Adapters
+
+#### React Adapter (`@jengo/storage/react`)
+
+```tsx
+import React, { useState } from 'react';
+import { useChunkedUpload } from '@jengo/storage/react';
+
+export function VideoUploader() {
+    const [file, setFile] = useState<File | null>(null);
+    const {
+        status,
+        progress,
+        result,
+        error,
+        isUploading,
+        isPaused,
+        start,
+        pause,
+        resume,
+        abort,
+    } = useChunkedUpload({
+        chunkSize: 2 * 1024 * 1024,
+        concurrency: 3,
+        disk: 'public',
+        folder: 'videos',
+    });
+
+    return (
+        <div>
+            <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
+            <button onClick={() => file && start(file)} disabled={!file || isUploading}>
+                Upload
+            </button>
+
+            {isUploading && (
+                <>
+                    <button onClick={pause}>Pause</button>
+                    <button onClick={abort}>Abort</button>
+                    <progress value={progress.percent} max={100} />
+                    <span>{progress.speed} (ETA: {progress.remainingSeconds}s)</span>
+                </>
+            )}
+
+            {isPaused && <button onClick={resume}>Resume</button>}
+            {result && <div>Success: <a href={result.url}>{result.filename}</a></div>}
+            {error && <div>Error: {error.message}</div>}
+        </div>
+    );
+}
+```
+
+#### Vue 3 Composition Adapter (`@jengo/storage/vue`)
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useChunkedUpload } from '@jengo/storage/vue';
+
+const selectedFile = ref<File | null>(null);
+
+const {
+    status,
+    progress,
+    result,
+    error,
+    isUploading,
+    isPaused,
+    start,
+    pause,
+    resume,
+    abort,
+} = useChunkedUpload({
+    disk: 'public',
+    folder: 'documents',
+});
+
+function onFileSelect(e: Event) {
+    const input = e.target as HTMLInputElement;
+    selectedFile.value = input.files?.[0] || null;
+}
+</script>
+
+<template>
+    <div>
+        <input type="file" @change="onFileSelect" />
+        <button :disabled="!selectedFile || isUploading" @click="selectedFile && start(selectedFile)">
+            Start Upload
+        </button>
+        <button v-if="isUploading" @click="pause">Pause</button>
+        <button v-if="isPaused" @click="resume">Resume</button>
+        <button v-if="isUploading || isPaused" @click="abort">Abort</button>
+
+        <div v-if="isUploading || isPaused">
+            <progress :value="progress.percent" max="100"></progress>
+            <p>{{ progress.percent }}% - {{ progress.speed }} - ETA: {{ progress.remainingSeconds }}s</p>
+        </div>
+
+        <p v-if="result">Uploaded: <a :href="result.url">{{ result.filename }}</a></p>
+    </div>
+</template>
+```
+
+#### Svelte Adapter (`@jengo/storage/svelte`)
+
+```svelte
+<script lang="ts">
+import { createChunkedUpload } from '@jengo/storage/svelte';
+
+let file: File | null = null;
+const upload = createChunkedUpload({
+    disk: 'public',
+    folder: 'assets',
+});
+
+function onFileSelect(e: Event) {
+    const input = e.target as HTMLInputElement;
+    file = input.files?.[0] || null;
+}
+</script>
+
+<input type="file" on:change={onFileSelect} />
+<button on:click={() => file && upload.start(file)} disabled={!file || $upload.isUploading}>
+    Upload
+</button>
+
+{#if $upload.isUploading}
+    <button on:click={upload.pause}>Pause</button>
+    <button on:click={upload.abort}>Abort</button>
+{/if}
+
+{#if $upload.isPaused}
+    <button on:click={upload.resume}>Resume</button>
+{/if}
+
+{#if $upload.isUploading || $upload.isPaused}
+    <div>
+        <progress value={$upload.progress.percent} max="100"></progress>
+        <span>{$upload.progress.percent}% ({$upload.progress.speed})</span>
+    </div>
+{/if}
+
+{#if $upload.result}
+    <p>Complete: {$upload.result.filename}</p>
+{/if}
+```
+
+### Direct Cloud Transfers with `@jengo/storage`
+
+For pre-signed S3, Cloudflare R2, or Google Cloud Storage direct transfers:
+
+```typescript
+import { DirectCloudUploader } from '@jengo/storage';
+
+const uploader = new DirectCloudUploader(file, {
+    ticketEndpoint: '/storage/direct/ticket',   // Requests pre-signed upload URL from backend
+    confirmEndpoint: '/storage/direct/confirm', // Confirms metadata after cloud write completes
+    onProgress: (p) => console.log(`${p.percent}%`),
+});
+
+const result = await uploader.start();
+```
+
+---
+
+## Direct Browser Pre-Signed Uploads (Backend)
 
 To upload large files directly from the browser (Inertia.js, React, Vue) to S3 or Cloudflare R2 without passing through the PHP web server:
 
