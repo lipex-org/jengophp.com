@@ -83,3 +83,14 @@ jengo new .
 ```
 
 The installer will automatically name your application based on the current directory name.
+
+## Development Server
+
+After scaffolding, start your local development environment using the `jengo dev` command:
+
+```bash
+cd my-app
+jengo dev
+```
+
+This runs `php spark jengo:dev` under the hood, concurrently orchestrating the PHP local server, Vite asset compiler, queue listeners, and broadcasting channels in a unified terminal interface.
