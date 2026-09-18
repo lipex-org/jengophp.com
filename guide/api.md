@@ -16,20 +16,25 @@ Or add it to an existing project:
 php spark jengo:setup api
 ```
 
+Or install directly via composer and run:
+```bash
+php spark jengo:install api
+```
+
 ## What it provides
 
-Establishing the Vault does two main things:
-1. Installs `firebase/php-jwt` for token handling.
-2. Publishes a base `APIController` to your `app/Controllers` directory.
+Configuring the API suite:
+1. Installs and configures `jengo/api` for automatic schema-backed REST routing, batch actions, and OpenAPI docs.
+2. Publishes `app/Config/JengoApi.php` and connects routes in `app/Config/Routes.php`.
 
 ## Declarative API Responses
 
-Jengo Base leverages PHP 8 attributes to simplify API development. By applying the `#[API]` attribute to a controller or method, Jengo automatically intercepts the response and formats it into a standardized JSON structure.
+Jengo API leverages PHP 8 attributes to simplify custom API development. By applying the `#[API]` attribute to any controller or method, Jengo automatically intercepts the response and formats it into a standardized JSON structure.
 
 ```php
 namespace App\Controllers;
 
-use Jengo\Base\Attributes\API;
+use Jengo\Api\Attributes\API;
 
 #[API]
 class ProductController extends BaseController

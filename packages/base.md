@@ -83,38 +83,14 @@ arr([1, 2, 3])->map(fn($v) => $v * 2)->toArray(); // [2, 4, 6]
 An agnostic wrapper for Composer and Node-based package managers (`npm`, `pnpm`, `yarn`), handling syntax differences automatically.
 
 
-## Declarative APIs
-
-Jengo introduces PHP 8 Attributes to CodeIgniter controllers to dramatically simplify API development.
-
-### `#[API]` Attribute
-Apply the `Jengo\Base\Attributes\API` attribute to any controller class or specific method. Jengo will automatically intercept the response, force a `application/json` content type, and wrap your returned data in a standardized Jengo JSON envelope (`status`, `message`, `data`/`errors`).
-
-```php
-namespace App\Controllers;
-
-use Jengo\Base\Attributes\API;
-
-#[API]
-class UserController extends BaseController
-{
-    public function show($id)
-    {
-        // Automatically wrapped in { "status": "success", "data": { ... } }
-        return [
-            'id' => $id,
-            'name' => 'Jengo Developer'
-        ];
-    }
-}
-```
-
 ## System Integrations (The Setup Hub)
 
 The `jengo:setup` command allows you to progressively enhance your application:
-- `php spark jengo:setup core`: Installs Jengo helpers into the CI4 autoloader.
-- `php spark jengo:setup auth`: Installs **The Gatekeeper** (CodeIgniter Shield with Jengo UI/Inertia stubs).
-- `php spark jengo:setup api`: Installs **The Vault** (JWT support and base API controllers).
+- `php spark jengo:setup core`: Installs Jengo helpers into the CI4 autoloader and registers modules autoloading.
+- `php spark jengo:setup auth`: Installs and configures the first-party `jengo/auth` package suite.
+- `php spark jengo:setup shield-auth`: Installs CodeIgniter Shield with Jengo Blueprint styling and UI stubs.
+- `php spark jengo:setup api`: Installs and configures the first-party `jengo/api` package suite.
+- `php spark jengo:setup inertia`: Installs and configures `jengo/inertia`.
 
 ---
 
