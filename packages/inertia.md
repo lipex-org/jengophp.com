@@ -132,9 +132,9 @@ export default function Dashboard() {
 
 The package is designed with SSR capabilities in mind. The Jengo installer ensures that your frontend frameworks (React, Vue, Svelte) and their respective Inertia adapters are installed as production dependencies (`dependencies` vs `devDependencies` in `package.json`), which is a strict requirement for Node-based SSR execution.
 
-## Exception Handling and Error Pages
+## Exception Handling and Error Pages <Badge type="tip" text="New in v1.1.23" />
 
-Standard CodeIgniter 4 exception handlers return raw PHP HTML views for uncaught errors, which disrupts the client-side SPA navigation cycle. `jengo/inertia` provides `InertiaExceptionHandler` to seamlessly render your Inertia error components for both SPA requests and direct browser visits with appropriate HTTP status codes.
+Standard CodeIgniter 4 exception handlers return raw PHP HTML views for uncaught errors, which disrupts the client-side SPA navigation cycle. Starting in **v1.1.23**, `jengo/inertia` provides `InertiaExceptionHandler` to seamlessly render your Inertia error components for both SPA requests and direct browser visits with appropriate HTTP status codes.
 
 ### Enabling the Exception Handler
 
