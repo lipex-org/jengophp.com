@@ -36,7 +36,7 @@ For complex applications requiring type-safe queries and relationship hydration,
 - **Virtual Schemas**: Query directly from existing CodeIgniter 4 Model classes without writing dedicated schema classes.
 - **TypeScript Interface Generation**: Generate `.d.ts` interfaces matching your database schemas directly from table metadata.
 
-For complete guides and API references, see the [jengo/schema package documentation](/packages/schema).
+For complete guides and API references, see the [jengo/schema package documentation](/packages/schema/).
 
 ---
 
@@ -48,5 +48,5 @@ When integrating third-party CodeIgniter 4 packages (such as CodeIgniter Shield,
 - **PHP 8 Mapping Attributes**: Declaratively configure column aliases, exclusions, and custom transformers (`#[MapFrom]`, `#[MapTo]`, `#[MapProperty]`, `#[MapIgnore]`, `#[MapWith]`).
 - **Nested Casting**: Automatically hydrate child entities and collections using `#[MapCast]`.
 
-For complete guides and API references, see the [jengo/base Data Mappings documentation](/packages/base#data-mappings).
+For complete guides and API references, see the [jengo/base Data Mappings documentation](/packages/base/mapping/).
 
