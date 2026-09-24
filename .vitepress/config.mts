@@ -52,6 +52,7 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'jengo/base', link: '/packages/base/', items: [
+              { text: 'Dependency Injection', link: '/packages/base/dependency-injection' },
               { text: 'Helpers & Utilities', link: '/packages/base/helpers' },
               { text: 'Command Variant Architecture', link: '/packages/base/command-variants' },
               { text: 'Resource Generators', link: '/packages/base/generators' },

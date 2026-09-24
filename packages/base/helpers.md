@@ -27,3 +27,30 @@ Resolves a model via the Jengo `ModelFacade`, ensuring a singleton instance and 
 ### Environment Checks
 
 `isProduction()`, `isDevelopment()`, and `isTesting()` provide quick booleans for environment branching.
+
+### `app(?string $abstract = null, array $parameters = [])`
+
+Returns the global PSR-11 `Container` instance when called with no arguments, or resolves the given `$abstract` type:
+
+```php
+$container = app();
+$userService = app(UserService::class);
+```
+
+### `resolve(string $abstract, array $parameters = [])`
+
+Alias for `app($abstract, $parameters)` to resolve a class or interface from the container:
+
+```php
+$gateway = resolve(PaymentGatewayInterface::class);
+```
+
+### `inject(callable|array|string $target)`
+
+Wraps a route closure, invokable object, or controller callable into a DI-aware route handler:
+
+```php
+$routes->get('users/(:num)', inject(function (int $id, UserRepositoryInterface $users) {
+    return json($users->find($id));
+}));
+```

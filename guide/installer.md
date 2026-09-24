@@ -94,3 +94,27 @@ jengo dev
 ```
 
 This runs `php spark jengo:dev` under the hood, concurrently orchestrating the PHP local server, Vite asset compiler, queue listeners, and broadcasting channels in a unified terminal interface.
+
+## Post-Install & Standalone Installers
+
+Inside an existing application, you can run individual package installers at any time using `php spark jengo:install`:
+
+```bash
+# Enable first-party Dependency Injection across BaseController and routes
+php spark jengo:install di
+
+# Configure Pest PHP testing suite
+php spark jengo:install pest
+
+# Configure SQLite database and run migrations
+php spark jengo:install db
+
+# Configure Vite asset pipeline
+php spark jengo:install vite
+
+# Configure TypeScript support
+php spark jengo:install ts
+
+# Configure Maizzle email compilation
+php spark jengo:install maizzle
+```
