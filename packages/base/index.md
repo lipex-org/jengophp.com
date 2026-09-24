@@ -9,7 +9,8 @@
 | Section | Description |
 | :--- | :--- |
 | [Core Architecture](/packages/base/#core-architecture) | The Blueprint UI layout system installed when you bootstrap a Jengo application. |
-| [Helpers & Utilities](/packages/base/helpers) | Global helper functions: `page()`, `str()`, `arr()`, `vite_tags()`, `model_of()` and environment checks. |
+| [Dependency Injection](/packages/base/dependency-injection) | PSR-11 container, recursive constructor autowiring, method injection, and `#[Bind]` caching. |
+| [Helpers & Utilities](/packages/base/helpers) | Global helper functions: `page()`, `str()`, `arr()`, `vite_tags()`, `sqids_hash()`, `model_of()` and environment checks. |
 | [Command Variant Architecture](/packages/base/command-variants) | The Master/Variant CLI system behind `jengo:make` and how to extend it. |
 | [Resource Generators](/packages/base/generators) | Boilerplate generators, the Auditor, Observer, Guardian, and Vite diagnostics. |
 | [Core Libraries](/packages/base/libraries) | The fluent `Str`, `Arr`, and `PackageManager` libraries. |

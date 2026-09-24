@@ -54,3 +54,13 @@ $routes->get('users/(:num)', inject(function (int $id, UserRepositoryInterface $
     return json($users->find($id));
 }));
 ```
+
+### `sqids_hash(?int $id)` & `sqids_unhash(?string $hash)`
+
+Generates and decodes obfuscated, URL-friendly IDs using Sqids configured via `Config\Jengo::$sqids`:
+
+```php
+$hash = sqids_hash(12345); // e.g. "b9bDbvbxbj"
+$id = sqids_unhash($hash);  // 12345
+```
+

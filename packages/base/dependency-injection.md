@@ -45,6 +45,25 @@ Events::on('init', static function (): void {
 });
 ```
 
+### Declarative Binding with `#[Bind]` Attribute
+
+Instead of registering bindings manually in event listeners, you can annotate concrete implementations using the `#[Bind]` attribute:
+
+```php
+namespace App\Repositories;
+
+use App\Contracts\UserRepositoryInterface;
+use Jengo\Base\Attributes\Bind;
+
+#[Bind(UserRepositoryInterface::class, singleton: true)]
+class InMemoryUserRepository implements UserRepositoryInterface
+{
+    // ...
+}
+```
+
+Bindings annotated with `#[Bind]` are compiled and cached in `.jengo/cache/bindings.php` for production opcache performance without reflection overhead.
+
 ---
 
 ## Dependency Injection Patterns
