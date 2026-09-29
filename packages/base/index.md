@@ -15,6 +15,7 @@
 | [Resource Generators](/packages/base/generators) | Boilerplate generators, the Auditor, Observer, Guardian, and Vite diagnostics. |
 | [Core Libraries](/packages/base/libraries) | The fluent `Str`, `Arr`, and `PackageManager` libraries. |
 | [The Setup Hub](/packages/base/setup) | Progressive system integrations via `jengo:setup`. |
+| [Modular Architecture & Discovery](/packages/base/modules) | Modules ecosystem, discovery caching, and the CI4 autoloader mitigation patch. |
 | [Data Mappings](/packages/base/mapping/) | The bidirectional mapping engine between arrays, third-party entities, DTOs, and Jengo entities. |
 
 ---

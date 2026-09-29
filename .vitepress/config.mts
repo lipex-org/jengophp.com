@@ -58,6 +58,7 @@ export default defineConfig({
               { text: 'Resource Generators', link: '/packages/base/generators' },
               { text: 'Core Libraries', link: '/packages/base/libraries' },
               { text: 'The Setup Hub', link: '/packages/base/setup' },
+              { text: 'Modular Architecture & Discovery', link: '/packages/base/modules' },
               { text: 'Data Mappings', link: '/packages/base/mapping/', items: [
                 { text: 'Direct Entity Mapping', link: '/packages/base/mapping/direct-mapping' },
                 { text: 'The Central Mapper Engine', link: '/packages/base/mapping/mapper-engine' },
