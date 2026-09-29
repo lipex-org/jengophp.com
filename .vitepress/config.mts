@@ -52,13 +52,20 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'jengo/base', link: '/packages/base/', items: [
+              { text: 'Commands & CLI', link: '/packages/base/commands/', items: [
+                { text: 'Development Console (jengo:dev)', link: '/packages/base/commands/dev' },
+                { text: 'Resource Generators (jengo:make)', link: '/packages/base/commands/make' },
+                { text: 'Module System (jengo:modules)', link: '/packages/base/commands/modules' },
+                { text: 'Setup Hub (jengo:setup)', link: '/packages/base/commands/setup' },
+                { text: 'Diagnostics (health, audit, tail)', link: '/packages/base/commands/diagnostics' },
+                { text: 'Utilities (tinker, sqids, clear)', link: '/packages/base/commands/utilities' }
+              ] },
               { text: 'Dependency Injection', link: '/packages/base/dependency-injection' },
+              { text: 'Entities & ValidatedData', link: '/packages/base/entities-validation' },
+              { text: 'Macros & Extensibility', link: '/packages/base/macros' },
+              { text: 'Pest Database Testing', link: '/packages/base/testing' },
               { text: 'Helpers & Utilities', link: '/packages/base/helpers' },
-              { text: 'Command Variant Architecture', link: '/packages/base/command-variants' },
-              { text: 'Resource Generators', link: '/packages/base/generators' },
               { text: 'Core Libraries', link: '/packages/base/libraries' },
-              { text: 'The Setup Hub', link: '/packages/base/setup' },
-              { text: 'Modular Architecture & Discovery', link: '/packages/base/modules' },
               { text: 'Data Mappings', link: '/packages/base/mapping/', items: [
                 { text: 'Direct Entity Mapping', link: '/packages/base/mapping/direct-mapping' },
                 { text: 'The Central Mapper Engine', link: '/packages/base/mapping/mapper-engine' },
@@ -120,9 +127,11 @@ export default defineConfig({
                 { text: 'Fluent Grants and Explicit Denies', link: '/packages/auth/vima/grants-deny' }
               ] },
               { text: 'Declarative PHP 8 Attributes', link: '/packages/auth/attributes' },
+              { text: 'Post-Auth Actions Pipeline', link: '/packages/auth/actions' },
+              { text: 'Form Handlers', link: '/packages/auth/forms' },
               { text: 'Response Modifiers', link: '/packages/auth/response-modifiers' },
               { text: 'Custom Notification Senders', link: '/packages/auth/notifications' },
-              { text: 'Custom Guards', link: '/packages/auth/guards' },
+              { text: 'Custom Guards & Tokens', link: '/packages/auth/guards' },
               { text: 'CLI Commands', link: '/packages/auth/cli' }
             ] },
             { text: 'jengo/api', link: '/packages/api/', items: [
@@ -160,6 +169,7 @@ export default defineConfig({
                 { text: 'Vue 3 Integration', link: '/packages/broadcasting/frontend-client/vue' },
                 { text: 'Svelte Integration', link: '/packages/broadcasting/frontend-client/svelte' }
               ] },
+              { text: 'CLI Commands', link: '/packages/broadcasting/cli' },
               { text: 'Testing with Broadcast::fake()', link: '/packages/broadcasting/testing' },
               { text: 'Production Readiness Roadmap', link: '/packages/broadcasting/roadmap' }
             ] }
@@ -190,7 +200,10 @@ export default defineConfig({
                 { text: 'Commercial Invoice', link: '/packages/pdf/document-builders/invoice' },
                 { text: 'Quotation / Project Proposal', link: '/packages/pdf/document-builders/quotation' },
                 { text: 'Payment Receipt & Voucher', link: '/packages/pdf/document-builders/receipt' },
-                { text: 'Employee Payslip', link: '/packages/pdf/document-builders/payslip' }
+                { text: 'Employee Payslip', link: '/packages/pdf/document-builders/payslip' },
+                { text: 'Certificate of Completion', link: '/packages/pdf/document-builders/certificate' },
+                { text: 'Delivery Note & Packing Slip', link: '/packages/pdf/document-builders/delivery-note' },
+                { text: 'Purchase Order', link: '/packages/pdf/document-builders/purchase-order' }
               ] },
               { text: 'Schema-Driven Data Reports', link: '/packages/pdf/schema-reports' },
               { text: 'Interactive Browser Preview', link: '/packages/pdf/preview' },
@@ -216,9 +229,11 @@ export default defineConfig({
               { text: 'History & Navigation Control', link: '/packages/inertia/history-control' },
               { text: 'Shared Data', link: '/packages/inertia/shared-data' },
               { text: 'The Client Side', link: '/packages/inertia/client-side' },
+              { text: 'Testing', link: '/packages/inertia/testing' },
               { text: 'SSR Support', link: '/packages/inertia/ssr' },
               { text: 'Exception Handling & Error Pages', link: '/packages/inertia/error-pages' }
             ] },
+
             { text: '@jengo/vite', link: '/packages/vite-plugin/', items: [
               { text: 'How it Works', link: '/packages/vite-plugin/how-it-works' },
               { text: 'Configuration', link: '/packages/vite-plugin/configuration' },
@@ -227,6 +242,7 @@ export default defineConfig({
           ]
         }
       ]
+
     },
 
     socialLinks: [

@@ -45,3 +45,24 @@ $token = auth()->createTokenFor($user, 'mobile-app', ['posts.read', 'posts.creat
 // Plaintext token is only displayed once
 echo $token->plainTextToken;
 ```
+
+---
+
+## 4. Extending User Entity with Macros
+
+Since `Jengo\Auth\Entities\User` extends `BaseEntity`, you can dynamically add helper methods and domain behaviors using macros:
+
+```php
+use Jengo\Auth\Entities\User;
+
+// Register an instance macro
+User::macro('hasCompletedOnboarding', function (): bool {
+    /** @var User $this */
+    return (bool) $this->active && !empty($this->username);
+});
+
+// Use the macro anywhere
+if (auth()->user()->hasCompletedOnboarding()) {
+    // ...
+}
+```

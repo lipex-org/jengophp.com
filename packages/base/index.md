@@ -8,14 +8,13 @@
 
 | Section | Description |
 | :--- | :--- |
-| [Core Architecture](/packages/base/#core-architecture) | The Blueprint UI layout system installed when you bootstrap a Jengo application. |
+| [Core Architecture](#core-architecture) | The Blueprint UI layout system installed when you bootstrap a Jengo application. |
 | [Dependency Injection](/packages/base/dependency-injection) | PSR-11 container, recursive constructor autowiring, method injection, and `#[Bind]` caching. |
 | [Helpers & Utilities](/packages/base/helpers) | Global helper functions: `page()`, `str()`, `arr()`, `vite_tags()`, `sqids_hash()`, `model_of()` and environment checks. |
-| [Command Variant Architecture](/packages/base/command-variants) | The Master/Variant CLI system behind `jengo:make` and how to extend it. |
-| [Resource Generators](/packages/base/generators) | Boilerplate generators, the Auditor, Observer, Guardian, and Vite diagnostics. |
+| [Entities & Validation](/packages/base/entities-validation) | `BaseEntity` with Sqids ID obfuscation and `ValidatedData` DTOs. |
 | [Core Libraries](/packages/base/libraries) | The fluent `Str`, `Arr`, and `PackageManager` libraries. |
-| [The Setup Hub](/packages/base/setup) | Progressive system integrations via `jengo:setup`. |
-| [Modular Architecture & Discovery](/packages/base/modules) | Modules ecosystem, discovery caching, and the CI4 autoloader mitigation patch. |
+| [Pest Testing Suite](/packages/base/testing) | Fluent database test runner (`PestDatabaseBuilder`) and `DatabaseTestCase`. |
+| [Commands & CLI](/packages/base/commands/) | Consolidated CLI Master/Variant system, `jengo:dev` console, generators, and diagnostics. |
 | [Data Mappings](/packages/base/mapping/) | The bidirectional mapping engine between arrays, third-party entities, DTOs, and Jengo entities. |
 
 ---

@@ -25,8 +25,10 @@
 | [Practical Application Guides](./guides/) | Five practical patterns for real-time features. |
 | [Local Development WebSocket Server](./dev-server) | Run the built-in daemon with `broadcast:serve`. |
 | [Frontend Client (`@jengo/broadcasting`)](./frontend-client/) | Unified client with React, Vue, and Svelte hooks. |
+| [CLI Commands](./cli) | All `broadcast:*` Spark CLI commands. |
 | [Testing with `Broadcast::fake()`](./testing) | In-memory fake with broadcast assertions. |
 | [Production Readiness Roadmap](./roadmap) | Milestones required before production workloads. |
+
 
 ---
 

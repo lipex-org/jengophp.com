@@ -33,3 +33,40 @@ class BaseController extends \CodeIgniter\Controller
     }
 }
 ```
+
+---
+
+## Using `HandleInertiaRequests` Middleware Filter
+
+The recommended architectural approach is defining a dedicated filter class `App\Filters\HandleInertiaRequests`:
+
+```php
+namespace App\Filters;
+
+use CodeIgniter\Filters\FilterInterface;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
+use Jengo\Inertia\Inertia;
+
+class HandleInertiaRequests implements FilterInterface
+{
+    public function before(RequestInterface $request, $params = null)
+    {
+        Inertia::share([
+            'auth' => [
+                'user' => auth()->check() ? auth()->user() : null,
+            ],
+            'flash' => [
+                'message' => session()->getFlashdata('message'),
+                'error'   => session()->getFlashdata('error'),
+            ],
+        ]);
+    }
+
+    public function after(RequestInterface $request, ResponseInterface $response, $params = null)
+    {
+        return $response;
+    }
+}
+```
+
