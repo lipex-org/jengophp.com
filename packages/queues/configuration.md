@@ -38,7 +38,6 @@ class Queue extends BaseQueue
 
         'database' => [
             'driver'     => 'database',
-            'table'      => 'queue_jobs',
             'queue'      => 'default',
             'retryAfter' => 90,
             'DBGroup'    => 'default',
@@ -50,7 +49,7 @@ class Queue extends BaseQueue
             'port'       => 6379,
             'password'   => null,
             'database'   => 0,
-            'timeout'    => 0.0,
+            'timeout'    => 5.0,
             'queue'      => 'default',
             'retryAfter' => 90,
         ],
@@ -64,7 +63,6 @@ class Queue extends BaseQueue
      * Failed job storage configuration.
      */
     public array $failed = [
-        'table'   => 'queue_failed_jobs',
         'DBGroup' => 'default',
     ];
 }
@@ -78,8 +76,7 @@ class Queue extends BaseQueue
 The `sync` driver runs all pushed jobs immediately in the same PHP process. This is the default in development and for quick local testing.
 
 ### Database Connection
-The `database` driver stores pending and reserved jobs in the `queue_jobs` table.
-- `table`: Database table holding pending queue items (default: `queue_jobs`).
+The `database` driver stores pending and reserved jobs in the fixed `queue_jobs` table.
 - `DBGroup`: Database connection group configured in `app/Config/Database.php`.
 - `retryAfter`: Time in seconds after which an uncompleted reserved job is released back to the worker pool (default: `90`).
 

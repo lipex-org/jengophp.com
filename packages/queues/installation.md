@@ -16,7 +16,7 @@ composer require jengo/queues
 
 ## 2. Run the Jengo Installer
 
-Run the installer to publish configuration files and database migrations:
+Run the installer to publish the configuration file:
 
 ```bash
 php spark jengo:install queue
@@ -24,14 +24,13 @@ php spark jengo:install queue
 
 This will publish:
 - `app/Config/Queue.php` - Primary queue connection configuration.
-- `app/Database/Migrations/{timestamp}_create_queue_tables.php` - Migration creating `queue_jobs` and `queue_failed_jobs` tables.
 
 ---
 
 ## 3. Run Database Migrations
 
-Apply the published database migrations to create the required queue storage tables:
+Run CodeIgniter's migration runner with the `--all` flag to automatically run the package's internal migrations:
 
 ```bash
-php spark migrate
+php spark migrate --all
 ```
