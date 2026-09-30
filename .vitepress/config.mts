@@ -14,6 +14,7 @@ export default defineConfig({
         { text: "Base", link: "/packages/base/" },
         { text: "Schema", link: "/packages/schema/" },
         { text: "Search", link: "/packages/search/" },
+        { text: "Queues", link: "/packages/queues/" },
         { text: "Storage", link: "/packages/storage/" },
         { text: "Authentication", link: "/packages/auth/" },
         { text: "API", link: "/packages/api/" },
@@ -102,6 +103,14 @@ export default defineConfig({
               { text: 'Querying & Builder', link: '/packages/search/querying' },
               { text: 'Supported Drivers & Deployment', link: '/packages/search/drivers' },
               { text: 'Testing with Search::fake()', link: '/packages/search/testing' }
+            ] },
+            { text: 'jengo/queues', link: '/packages/queues/', collapsed: true, items: [
+              { text: 'Installation', link: '/packages/queues/installation' },
+              { text: 'Configuration', link: '/packages/queues/configuration' },
+              { text: 'Defining & Dispatching Jobs', link: '/packages/queues/defining-jobs' },
+              { text: 'Workers & CLI Commands', link: '/packages/queues/workers-and-cli' },
+              { text: 'Failed Jobs Management', link: '/packages/queues/failed-jobs' },
+              { text: 'Testing with Queue::fake()', link: '/packages/queues/testing' }
             ] },
             { text: 'jengo/storage', link: '/packages/storage/', collapsed: true, items: [
               { text: 'Installation', link: '/packages/storage/installation' },
