@@ -13,6 +13,7 @@ export default defineConfig({
       { text: 'Packages', items: [
         { text: "Base", link: "/packages/base/" },
         { text: "Schema", link: "/packages/schema/" },
+        { text: "Search", link: "/packages/search/" },
         { text: "Storage", link: "/packages/storage/" },
         { text: "Authentication", link: "/packages/auth/" },
         { text: "API", link: "/packages/api/" },
@@ -32,6 +33,7 @@ export default defineConfig({
       '/guide/': [
         {
           text: 'Introduction',
+          collapsed: false,
           items: [
             { text: 'Getting Started', link: '/guide/getting-started' },
             { text: 'The Installer', link: '/guide/installer' }
@@ -39,6 +41,7 @@ export default defineConfig({
         },
         {
           text: 'Core Features',
+          collapsed: false,
           items: [
             { text: 'The Gatekeeper (Auth)', link: '/guide/auth' },
             { text: 'The Vault (API)', link: '/guide/api' },
@@ -51,8 +54,8 @@ export default defineConfig({
           text: 'Foundational & Core',
           collapsed: false,
           items: [
-            { text: 'jengo/base', link: '/packages/base/', items: [
-              { text: 'Commands & CLI', link: '/packages/base/commands/', items: [
+            { text: 'jengo/base', link: '/packages/base/', collapsed: true, items: [
+              { text: 'Commands & CLI', link: '/packages/base/commands/', collapsed: true, items: [
                 { text: 'Development Console (jengo:dev)', link: '/packages/base/commands/dev' },
                 { text: 'Resource Generators (jengo:make)', link: '/packages/base/commands/make' },
                 { text: 'Module System (jengo:modules)', link: '/packages/base/commands/modules' },
@@ -66,11 +69,11 @@ export default defineConfig({
               { text: 'Pest Database Testing', link: '/packages/base/testing' },
               { text: 'Helpers & Utilities', link: '/packages/base/helpers' },
               { text: 'Core Libraries', link: '/packages/base/libraries' },
-              { text: 'Data Mappings', link: '/packages/base/mapping/', items: [
+              { text: 'Data Mappings', link: '/packages/base/mapping/', collapsed: true, items: [
                 { text: 'Direct Entity Mapping', link: '/packages/base/mapping/direct-mapping' },
                 { text: 'The Central Mapper Engine', link: '/packages/base/mapping/mapper-engine' },
                 { text: 'Bi-Directional Synchronization', link: '/packages/base/mapping/syncing' },
-                { text: 'PHP 8 Mapping Attributes', link: '/packages/base/mapping/attributes/', items: [
+                { text: 'PHP 8 Mapping Attributes', link: '/packages/base/mapping/attributes/', collapsed: true, items: [
                   { text: 'Property-Level Attributes', link: '/packages/base/mapping/attributes/property-attributes' },
                   { text: 'Class-Level Dynamic Mapping', link: '/packages/base/mapping/attributes/class-attributes' },
                   { text: 'Attribute Reference', link: '/packages/base/mapping/attributes/reference' }
@@ -79,7 +82,7 @@ export default defineConfig({
                 { text: 'Performance Architecture', link: '/packages/base/mapping/performance' }
               ] }
             ] },
-            { text: 'jengo/schema', link: '/packages/schema/', items: [
+            { text: 'jengo/schema', link: '/packages/schema/', collapsed: true, items: [
               { text: 'Installation', link: '/packages/schema/installation' },
               { text: 'Defining Schemas', link: '/packages/schema/defining-schemas' },
               { text: 'The Fluent Query API', link: '/packages/schema/querying' },
@@ -92,16 +95,24 @@ export default defineConfig({
               { text: 'Spark CLI Commands', link: '/packages/schema/cli' },
               { text: 'AI Agent Integration', link: '/packages/schema/ai-integration' }
             ] },
-            { text: 'jengo/storage', link: '/packages/storage/', items: [
+            { text: 'jengo/search', link: '/packages/search/', collapsed: true, items: [
+              { text: 'Installation', link: '/packages/search/installation' },
+              { text: 'Configuration', link: '/packages/search/configuration' },
+              { text: 'Searchable Models', link: '/packages/search/searchable-models' },
+              { text: 'Querying & Builder', link: '/packages/search/querying' },
+              { text: 'Supported Drivers & Deployment', link: '/packages/search/drivers' },
+              { text: 'Testing with Search::fake()', link: '/packages/search/testing' }
+            ] },
+            { text: 'jengo/storage', link: '/packages/storage/', collapsed: true, items: [
               { text: 'Installation', link: '/packages/storage/installation' },
               { text: 'Configuration', link: '/packages/storage/configuration' },
               { text: 'Basic File Operations', link: '/packages/storage/file-operations' },
               { text: 'Directory Management', link: '/packages/storage/directories' },
               { text: 'URLs & Signed URLs', link: '/packages/storage/signed-urls' },
               { text: 'Chunked Multipart Uploads', link: '/packages/storage/chunked-uploads' },
-              { text: 'Frontend Client', link: '/packages/storage/frontend-client/', items: [
+              { text: 'Frontend Client', link: '/packages/storage/frontend-client/', collapsed: true, items: [
                 { text: 'Vanilla TypeScript Usage', link: '/packages/storage/frontend-client/vanilla-usage' },
-                { text: 'Framework Adapters', link: '/packages/storage/frontend-client/adapters/', items: [
+                { text: 'Framework Adapters', link: '/packages/storage/frontend-client/adapters/', collapsed: true, items: [
                   { text: 'React', link: '/packages/storage/frontend-client/adapters/react' },
                   { text: 'Vue 3', link: '/packages/storage/frontend-client/adapters/vue' },
                   { text: 'Svelte', link: '/packages/storage/frontend-client/adapters/svelte' }
@@ -114,12 +125,12 @@ export default defineConfig({
               { text: 'Testing with Storage::fake()', link: '/packages/storage/testing' },
               { text: 'CLI Spark Commands', link: '/packages/storage/cli' }
             ] },
-            { text: 'jengo/auth', link: '/packages/auth/', items: [
+            { text: 'jengo/auth', link: '/packages/auth/', collapsed: true, items: [
               { text: 'Installation', link: '/packages/auth/installation' },
               { text: 'Route Publishing', link: '/packages/auth/routes' },
               { text: 'Quick Start', link: '/packages/auth/quick-start' },
               { text: 'Protecting Endpoints', link: '/packages/auth/protecting-endpoints' },
-              { text: 'Authorization with Vima', link: '/packages/auth/vima/', items: [
+              { text: 'Authorization with Vima', link: '/packages/auth/vima/', collapsed: true, items: [
                 { text: 'Roles and Permissions', link: '/packages/auth/vima/roles-permissions' },
                 { text: 'Synchronizing to Database', link: '/packages/auth/vima/syncing' },
                 { text: 'Generating TypeScript Mappings', link: '/packages/auth/vima/typescript-maps' },
@@ -134,7 +145,7 @@ export default defineConfig({
               { text: 'Custom Guards & Tokens', link: '/packages/auth/guards' },
               { text: 'CLI Commands', link: '/packages/auth/cli' }
             ] },
-            { text: 'jengo/api', link: '/packages/api/', items: [
+            { text: 'jengo/api', link: '/packages/api/', collapsed: true, items: [
               { text: 'Installation', link: '/packages/api/installation' },
               { text: 'Defining Resource Configurations', link: '/packages/api/resource-config' },
               { text: 'Registering Resources', link: '/packages/api/registering' },
@@ -150,11 +161,11 @@ export default defineConfig({
           text: 'Real-Time & Networking',
           collapsed: false,
           items: [
-            { text: 'jengo/broadcasting', link: '/packages/broadcasting/', items: [
+            { text: 'jengo/broadcasting', link: '/packages/broadcasting/', collapsed: true, items: [
               { text: 'Installation', link: '/packages/broadcasting/installation' },
               { text: 'Configuration', link: '/packages/broadcasting/configuration' },
               { text: 'The Broadcasting Mental Model', link: '/packages/broadcasting/mental-model' },
-              { text: 'Practical Application Guides', link: '/packages/broadcasting/guides/', items: [
+              { text: 'Practical Application Guides', link: '/packages/broadcasting/guides/', collapsed: true, items: [
                 { text: 'Order / Delivery Tracker', link: '/packages/broadcasting/guides/order-tracker' },
                 { text: 'Background Job Progress Bar', link: '/packages/broadcasting/guides/export-progress' },
                 { text: 'Collaborative Kanban Board', link: '/packages/broadcasting/guides/kanban-board' },
@@ -162,7 +173,7 @@ export default defineConfig({
                 { text: 'Live Interactive Polling Room', link: '/packages/broadcasting/guides/polling-room' }
               ] },
               { text: 'Local Development WebSocket Server', link: '/packages/broadcasting/dev-server' },
-              { text: 'Frontend Client', link: '/packages/broadcasting/frontend-client/', items: [
+              { text: 'Frontend Client', link: '/packages/broadcasting/frontend-client/', collapsed: true, items: [
                 { text: 'SSE Setup', link: '/packages/broadcasting/frontend-client/sse-setup' },
                 { text: 'WebSockets Setup', link: '/packages/broadcasting/frontend-client/ws-setup' },
                 { text: 'React Integration', link: '/packages/broadcasting/frontend-client/react' },
@@ -179,7 +190,7 @@ export default defineConfig({
           text: 'Enterprise & Media',
           collapsed: false,
           items: [
-            { text: 'jengo/ai', link: '/packages/ai/', items: [
+            { text: 'jengo/ai', link: '/packages/ai/', collapsed: true, items: [
               { text: 'Installation', link: '/packages/ai/installation' },
               { text: 'Configuration', link: '/packages/ai/configuration' },
               { text: 'Quick Start', link: '/packages/ai/quick-start' },
@@ -192,11 +203,11 @@ export default defineConfig({
               { text: 'Testing with Ai::fake()', link: '/packages/ai/testing' },
               { text: 'Supported Providers & Models', link: '/packages/ai/providers' }
             ] },
-            { text: 'jengo/pdf', link: '/packages/pdf/', items: [
+            { text: 'jengo/pdf', link: '/packages/pdf/', collapsed: true, items: [
               { text: 'Installation', link: '/packages/pdf/installation' },
               { text: 'Configuration', link: '/packages/pdf/configuration' },
               { text: 'Quick Start', link: '/packages/pdf/quick-start' },
-              { text: 'Pre-Built Document Builders', link: '/packages/pdf/document-builders/', items: [
+              { text: 'Pre-Built Document Builders', link: '/packages/pdf/document-builders/', collapsed: true, items: [
                 { text: 'Commercial Invoice', link: '/packages/pdf/document-builders/invoice' },
                 { text: 'Quotation / Project Proposal', link: '/packages/pdf/document-builders/quotation' },
                 { text: 'Payment Receipt & Voucher', link: '/packages/pdf/document-builders/receipt' },
@@ -207,7 +218,7 @@ export default defineConfig({
               ] },
               { text: 'Schema-Driven Data Reports', link: '/packages/pdf/schema-reports' },
               { text: 'Interactive Browser Preview', link: '/packages/pdf/preview' },
-              { text: 'Preview Filtering & Slide-Over Drawer', link: '/packages/pdf/filtering/', items: [
+              { text: 'Preview Filtering & Slide-Over Drawer', link: '/packages/pdf/filtering/', collapsed: true, items: [
                 { text: 'Filter Types & Factory', link: '/packages/pdf/filtering/filter-types' },
                 { text: 'The onFilter Handler', link: '/packages/pdf/filtering/on-filter' },
                 { text: 'Schema Report Auto-Filters', link: '/packages/pdf/filtering/schema-auto-filters' },
@@ -223,7 +234,7 @@ export default defineConfig({
           text: 'Frontend & Tooling',
           collapsed: false,
           items: [
-            { text: 'jengo/inertia', link: '/packages/inertia/', items: [
+            { text: 'jengo/inertia', link: '/packages/inertia/', collapsed: true, items: [
               { text: 'Basic Usage', link: '/packages/inertia/basic-usage' },
               { text: 'Inertia v3 Features', link: '/packages/inertia/v3-features' },
               { text: 'History & Navigation Control', link: '/packages/inertia/history-control' },
@@ -234,7 +245,7 @@ export default defineConfig({
               { text: 'Exception Handling & Error Pages', link: '/packages/inertia/error-pages' }
             ] },
 
-            { text: '@jengo/vite', link: '/packages/vite-plugin/', items: [
+            { text: '@jengo/vite', link: '/packages/vite-plugin/', collapsed: true, items: [
               { text: 'How it Works', link: '/packages/vite-plugin/how-it-works' },
               { text: 'Configuration', link: '/packages/vite-plugin/configuration' },
               { text: 'Frontend Usage in CodeIgniter', link: '/packages/vite-plugin/frontend-usage' }
