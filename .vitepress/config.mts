@@ -56,6 +56,16 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'jengo/base', link: '/packages/base/', collapsed: true, items: [
+              { text: 'Form Handlers & Validation', link: '/packages/base/validation' },
+              { text: 'Entities & ID Obfuscation', link: '/packages/base/entities-validation' },
+              { text: 'Response Modifiers', link: '/packages/base/response-modifiers' },
+              { text: 'Package Installers', link: '/packages/base/installers' },
+              { text: 'The Setup Hub', link: '/packages/base/setups' },
+              { text: 'Dependency Injection', link: '/packages/base/dependency-injection' },
+              { text: 'Macros & Extensibility', link: '/packages/base/macros' },
+              { text: 'Helpers & Utilities', link: '/packages/base/helpers' },
+              { text: 'Core Libraries', link: '/packages/base/libraries' },
+              { text: 'Pest Database Testing', link: '/packages/base/testing' },
               { text: 'Commands & CLI', link: '/packages/base/commands/', collapsed: true, items: [
                 { text: 'Development Console (jengo:dev)', link: '/packages/base/commands/dev' },
                 { text: 'Resource Generators (jengo:make)', link: '/packages/base/commands/make' },
@@ -64,12 +74,6 @@ export default defineConfig({
                 { text: 'Diagnostics (health, audit, tail)', link: '/packages/base/commands/diagnostics' },
                 { text: 'Utilities (tinker, sqids, clear)', link: '/packages/base/commands/utilities' }
               ] },
-              { text: 'Dependency Injection', link: '/packages/base/dependency-injection' },
-              { text: 'Entities & ValidatedData', link: '/packages/base/entities-validation' },
-              { text: 'Macros & Extensibility', link: '/packages/base/macros' },
-              { text: 'Pest Database Testing', link: '/packages/base/testing' },
-              { text: 'Helpers & Utilities', link: '/packages/base/helpers' },
-              { text: 'Core Libraries', link: '/packages/base/libraries' },
               { text: 'Data Mappings', link: '/packages/base/mapping/', collapsed: true, items: [
                 { text: 'Direct Entity Mapping', link: '/packages/base/mapping/direct-mapping' },
                 { text: 'The Central Mapper Engine', link: '/packages/base/mapping/mapper-engine' },
