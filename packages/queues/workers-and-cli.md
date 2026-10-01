@@ -71,18 +71,51 @@ php spark jengo:queue status redis
 
 ---
 
-## Production Process Supervision (Supervisor)
+## Production Process Supervision (Supervisor & Systemd)
 
-For production environments, use **Supervisor** or **systemd** to keep worker daemons running continuously:
+Worker processes are long-lived CLI daemons. In production, always supervise worker processes so that they automatically recover from memory limits or unexpected server restarts.
+
+### Supervisor Configuration
+
+Create `/etc/supervisor/conf.d/jengo-worker.conf`:
 
 ```ini
 [program:jengo-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/my-app/spark jengo:queue work redis --queue=high,default --tries=3
+command=php /var/www/my-app/spark jengo:queue work redis --queue=high,default,low --sleep=3 --tries=3 --max-jobs=1000
 autostart=true
 autorestart=true
 user=www-data
 numprocs=4
 redirect_stderr=true
 stdout_logfile=/var/www/my-app/writable/logs/worker.log
+stopwaitsecs=3600
 ```
+
+### Systemd Service Configuration
+
+Create `/etc/systemd/system/jengo-worker@.service`:
+
+```ini
+[Unit]
+Description=Jengo Queue Worker %i
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/my-app
+ExecStart=/usr/bin/php /var/www/my-app/spark jengo:queue work redis --queue=high,default --sleep=3 --tries=3
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+```
+
+---
+
+## Concurrency & Driver Performance
+
+- **Redis Driver**: Recommended for high throughput (thousands of jobs/min). Atomic Redis operations (`RPOPLPUSH`, `ZREMRANGEBYSCORE`) eliminate race conditions across multiple concurrent workers.
+- **Database Driver**: Ideal for simple setups without extra infrastructure. Uses `reserved_at` lock timestamps. When scaling workers beyond 10+ processes, Redis is recommended to reduce database lock contention.

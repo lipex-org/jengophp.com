@@ -65,6 +65,36 @@ class SendWelcomeEmail implements ShouldQueue
 
 ---
 
+## Serialization Best Practices
+
+When dispatching jobs into asynchronous drivers (such as `database` or `redis`), PHP serializes the entire job object into a payload string. To ensure reliability and avoid stale data:
+
+### 1. Pass Identifiers, Not Active Models
+Never serialize full database entity instances, open PDO connections, or resource streams. Pass IDs and reload entities inside `handle()`:
+
+```php
+// Recommended: Pass scalar IDs
+public function __construct(public int $orderId) {}
+
+public function handle(): void
+{
+    $orderModel = model(OrderModel::class);
+    $order = $orderModel->find($this->orderId);
+
+    if (! $order) {
+        // Record was deleted prior to worker execution
+        return;
+    }
+
+    // Process order...
+}
+```
+
+### 2. Avoid Heavy Closures or Circular References
+Job constructors should avoid closures or classes referencing large application services, since un-serializable dependencies will trigger a `SerializationException`. Ensure all properties are serializable PHP types.
+
+---
+
 ## Dispatching Jobs
 
 ### 1. Using the `dispatch()` Helper
