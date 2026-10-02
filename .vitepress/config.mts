@@ -150,6 +150,8 @@ export default defineConfig({
                 { text: 'Checking Permissions & Policies', link: '/packages/auth/vima/checking' },
                 { text: 'Fluent Grants and Explicit Denies', link: '/packages/auth/vima/grants-deny' }
               ] },
+              { text: 'Sudo Mode (Step-Up Auth)', link: '/packages/auth/sudo' },
+              { text: 'Two-Factor & Passkeys', link: '/packages/auth/two-factor' },
               { text: 'Declarative PHP 8 Attributes', link: '/packages/auth/attributes' },
               { text: 'Post-Auth Actions Pipeline', link: '/packages/auth/actions' },
               { text: 'Form Handlers', link: '/packages/auth/forms' },
