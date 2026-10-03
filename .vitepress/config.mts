@@ -142,7 +142,7 @@ export default defineConfig({
               { text: 'Installation', link: '/packages/auth/installation' },
               { text: 'Route Publishing', link: '/packages/auth/routes' },
               { text: 'Quick Start', link: '/packages/auth/quick-start' },
-              { text: 'Protecting Endpoints', link: '/packages/auth/protecting-endpoints' },
+              { text: 'Protecting Routes and Controllers', link: '/packages/auth/protecting-routes' },
               { text: 'Authorization with Vima', link: '/packages/auth/vima/', collapsed: true, items: [
                 { text: 'Roles and Permissions', link: '/packages/auth/vima/roles-permissions' },
                 { text: 'Synchronizing to Database', link: '/packages/auth/vima/syncing' },

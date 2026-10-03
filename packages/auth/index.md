@@ -12,7 +12,7 @@
 | [Installation](./installation) | Install via Composer, run setup, and migrate. |
 | [Route Publishing](./routes) | Configure standard, customized, selective, and controller-overridden routes. |
 | [Quick Start](./quick-start) | Check auth state, attempt logins, and issue Personal Access Tokens. |
-| [Protecting Endpoints](./protecting-endpoints) | Global `auth` filter, `Authenticate` attributes, and guards. |
+| [Protecting Routes and Controllers](./protecting-routes) | Global `auth` filter, `Authenticate` attributes, and guards. |
 | [Authorization with Vima](./vima/) | Roles, permissions, ABAC policies, grants, and denies. |
 | [Declarative PHP 8 Attributes](./attributes) | `#[Authenticate]`, `#[Can]`, `#[Role]`, and `#[Guest]`. |
 | [Post-Auth Actions](./actions) | Email 2FA, Email Activator, and custom post-auth verification steps. |
