@@ -121,7 +121,35 @@ class RequireTermsAcceptance implements AuthActionInterface
 
 ---
 
-## 4. Cancelling Pending Actions
+## 4. Action-Specific View Resolution
+
+You can customize the HTML view or Inertia component for specific actions in `app/Config/Auth.php` using the action's identifier:
+
+```php
+// app/Config/Auth.php
+public array $views = [
+    // Global fallback view for all action challenges:
+    'action_mfa'               => 'Pages/Auth/DefaultActionChallenge',
+
+    // Action-specific view overrides (matched by getActionName()):
+    'action_email_2fa'         => 'Pages/Auth/EmailTwoFactorChallenge',
+    'action_terms_acceptance'  => 'Pages/Auth/TermsOfServiceModal',
+    'action_sms_otp'           => 'App\Views\Auth\sms_otp_challenge',
+];
+```
+
+### Resolution Priority Order
+
+When rendering an action view:
+1. **Explicit View on DTO**: `$data->view` provided directly by the action class.
+2. **Action-Specific Config Key**: `config('Auth')->views['action_' . $actionName]` (or `action_mfa_{actionName}`).
+3. **Global Action Fallback**: `config('Auth')->views['action_mfa']`.
+4. **Default Built-in View**: `Jengo\Auth\Views\mfa_challenge` (or `auth/mfa_challenge` for Inertia).
+
+---
+
+## 5. Cancelling Pending Actions
 
 If a user wishes to cancel out of a pending authentication action, the route `POST /auth/action/cancel` (`auth.action.cancel`) clears all pending session state (`auth_pending_user_id`, `auth_pending_actions`) and safely redirects back to the login screen.
+
 
