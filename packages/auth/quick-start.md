@@ -39,11 +39,17 @@ Issue scoped tokens for API or mobile clients:
 ```php
 $user = auth()->user();
 
-// Create token with specific abilities/scopes
-$token = auth()->createTokenFor($user, 'mobile-app', ['posts.read', 'posts.create']);
+// Create token with specific abilities/scopes and optional expiration / custom prefix
+$token = auth()->createTokenFor(
+    user: $user,
+    name: 'mobile-app',
+    abilities: ['posts.read', 'posts.create'],
+    expiresAt: new DateTime('+90 days'),
+    prefix: 'acumen_pat_' // Optional custom prefix override
+);
 
 // Plaintext token is only displayed once
-echo $token->plainTextToken;
+echo $token->plainTextToken; // e.g. "acumen_pat_7a8f9c1b2e3d4..."
 ```
 
 ---

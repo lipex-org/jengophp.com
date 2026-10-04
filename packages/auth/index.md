@@ -18,9 +18,11 @@
 | [Post-Auth Actions](./actions) | Email 2FA, Email Activator, and custom post-auth verification steps. |
 | [Form Handlers](./forms) | Built-in login, registration, password reset, and magic link form handlers. |
 | [Response Modifiers](./response-modifiers) | Switch between HTML views, JSON envelopes, and Inertia responses. |
+| [API & Payload Reference](./api-reference) | Full HTTP endpoint specifications, request payloads, and response structures. |
 | [Custom Notification Senders](./notifications) | Queue or replace auth emails and codes. |
 | [Custom Guards & Tokens](./guards) | Register custom authentication drivers and manage token abilities. |
 | [CLI Commands](./cli) | All `jengo:auth` and `vima` Spark commands. |
+
 
 
 ---
