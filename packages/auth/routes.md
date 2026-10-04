@@ -15,22 +15,22 @@ The recommended way to publish routes is using dedicated feature helper methods 
 // app/Config/Routes.php
 use Jengo\Auth\Support\RouteRegistrar;
 
-// 1. Core Authentication (login, logout, registration, password reset)
+// 1. Core Authentication (login, logout, registration, password reset) -> [API Reference](./api-reference#1-core-authentication)
 RouteRegistrar::core($routes);
 
-// 2. Post-Auth MFA / Action Pipeline (show, challenge/resend, handle, cancel)
+// 2. Post-Auth MFA / Action Pipeline (show, challenge/resend, handle, cancel) -> [Actions Guide](./actions)
 RouteRegistrar::action($routes);
 
-// 3. Passwordless Magic Link Login & Verification
+// 3. Passwordless Magic Link Login & Verification -> [API Reference](./api-reference#2-passwordless-magic-links)
 RouteRegistrar::magicLink($routes);
 
-// 4. Two-Factor Authentication Settings & Enrollment (TOTP, Passkeys)
+// 4. Two-Factor Authentication Settings & Enrollment (TOTP, Passkeys) -> [2FA Guide](./two-factor)
 RouteRegistrar::twoFactor($routes);
 
-// 5. Sudo Mode (Step-up privileged re-authentication)
+// 5. Sudo Mode (Step-up privileged re-authentication) -> [Sudo Guide](./sudo)
 RouteRegistrar::sudo($routes);
 
-// 6. Personal Access Tokens API Management
+// 6. Personal Access Tokens API Management -> [Guards & Tokens](./guards#token-prefix--formatting)
 RouteRegistrar::tokens($routes, [
     'prefix' => 'api/v1/auth/tokens',
     'filter' => 'auth:token',
@@ -43,12 +43,12 @@ RouteRegistrar::all($routes);
 You can also call these directly via `auth()` or `service('auth')`:
 
 ```php
-auth()->coreRoutes($routes);
-auth()->actionRoutes($routes);
-auth()->magicLinkRoutes($routes);
-auth()->twoFactorRoutes($routes);
-auth()->sudoRoutes($routes);
-auth()->tokenRoutes($routes);
+auth()->coreRoutes($routes);      // Core authentication
+auth()->actionRoutes($routes);    // Post-auth action pipeline (MFA)
+auth()->magicLinkRoutes($routes); // Passwordless magic links
+auth()->twoFactorRoutes($routes); // Multi-factor management
+auth()->sudoRoutes($routes);      // Sudo privileged step-up mode
+auth()->tokenRoutes($routes);     // Scoped Personal Access Tokens
 ```
 
 ---
@@ -101,34 +101,34 @@ Below is the complete list of flow names available for `only` and `except`, alon
 
 | Flow Name | HTTP Verb | Default Path | Canonical Route Name (`as`) | Default Controller Action |
 | :--- | :--- | :--- | :--- | :--- |
-| **`login`** | `GET` | `login` | `login` | `LoginController::showLogin` |
+| [**`login`**](./api-reference#post-login) | `GET` | `login` | `login` | `LoginController::showLogin` |
 | | `POST` | `login` | `login.attempt` | `LoginController::attemptLogin` |
 | | `POST` / `GET` | `logout` | `logout` | `LoginController::logout` |
-| **`register`** | `GET` | `register` | `register` | `RegisterController::showRegister` |
+| [**`register`**](./api-reference#post-register) | `GET` | `register` | `register` | `RegisterController::showRegister` |
 | | `POST` | `register` | `register.attempt` | `RegisterController::attemptRegister` |
-| **`password-reset`** | `GET` | `forgot-password` | `forgot-password` | `ForgotPasswordController::showForgot` |
+| [**`password-reset`**](./api-reference#3-self-service-password-reset) | `GET` | `forgot-password` | `forgot-password` | `ForgotPasswordController::showForgot` |
 | | `POST` | `forgot-password` | `forgot-password.send` | `ForgotPasswordController::sendResetLink` |
 | | `GET` | `reset-password/(:segment)` | `reset-password` | `ResetPasswordController::showReset` |
 | | `GET` | `reset-password` | `reset-password.query` | `ResetPasswordController::showReset` |
 | | `POST` | `reset-password` | `reset-password.attempt` | `ResetPasswordController::attemptReset` |
-| **`magic-link`** | `GET` | `magic-link` | `magic-link` | `MagicLinkController::showMagicLink` |
+| [**`magic-link`**](./api-reference#2-passwordless-magic-links) | `GET` | `magic-link` | `magic-link` | `MagicLinkController::showMagicLink` |
 | | `POST` | `magic-link` | `magic-link.send` | `MagicLinkController::sendLink` |
 | | `GET` | `magic-link/verify/(:segment)` | `magic-link.verify` | `MagicLinkController::verifyLink` |
 | | `GET` | `magic-link/verify` | `magic-link.verify.query` | `MagicLinkController::verifyLink` |
-| **`action`** | `GET` | `auth/action/show` | `auth.action.show` | `ActionController::show` |
+| [**`action`**](./actions) | `GET` | `auth/action/show` | `auth.action.show` | `ActionController::show` |
 | | `POST` | `auth/action/challenge` | `auth.action.challenge` | `ActionController::challenge` |
 | | `POST` | `auth/action/handle` | `auth.action.handle` | `ActionController::handle` |
 | | `POST` | `auth/action/cancel` | `auth.action.cancel` | `ActionController::cancel` |
 | | `GET` | `auth/action/cancel` | `auth.action.cancel.get` | `ActionController::cancel` |
-| **`sudo`** | `GET` | `auth/sudo` | `auth.sudo` | `SudoController::index` |
+| [**`sudo`**](./sudo) | `GET` | `auth/sudo` | `auth.sudo` | `SudoController::index` |
 | | `POST` | `auth/sudo/challenge` | `auth.sudo.challenge` | `SudoController::challenge` |
 | | `POST` | `auth/sudo/verify` | `auth.sudo.verify` | `SudoController::verify` |
 | | `POST` | `auth/sudo/exit` | `auth.sudo.exit` | `SudoController::exit` |
-| **`two-factor`** | `GET` | `user/two-factor` | `two-factor.index` | `TwoFactorSettingsController::index` |
+| [**`two-factor`**](./two-factor) | `GET` | `user/two-factor` | `two-factor.index` | `TwoFactorSettingsController::index` |
 | | `POST` | `user/two-factor/enroll/start` | `two-factor.enroll.start` | `TwoFactorSettingsController::startEnrollment` |
 | | `POST` | `user/two-factor/enroll/confirm` | `two-factor.enroll.confirm` | `TwoFactorSettingsController::confirmEnrollment` |
 | | `POST` | `user/two-factor/unenroll` | `two-factor.unenroll` | `TwoFactorSettingsController::unenroll` |
-| **`tokens`** | `GET` | `api/tokens` | `tokens.index` | `TokenController::index` |
+| [**`tokens`**](./guards#token-prefix--formatting) | `GET` | `api/tokens` | `tokens.index` | `TokenController::index` |
 | | `POST` | `api/tokens` | `tokens.create` | `TokenController::create` |
 | | `DELETE`| `api/tokens/(:segment)` | `tokens.revoke` | `TokenController::revoke` |
 
@@ -167,5 +167,46 @@ $resetUrl  = url_to('reset-password', $token);
 // auth_url() helper provides graceful fallbacks:
 $profile2fa = auth_url('two-factor.index');
 ```
+
+---
+
+## 7. Configuring Redirect Destinations
+
+In `app/Config/Auth.php`, configure post-authentication destinations using URL paths (for landing pages) or canonical route names (for authentication flows):
+
+```php
+namespace Config;
+
+use Jengo\Auth\Config\Auth as BaseAuth;
+
+class Auth extends BaseAuth
+{
+    /**
+     * Redirect destinations.
+     * Use URL paths (e.g. '/', '/dashboard') for landing pages or route names (e.g. 'login') for authentication targets.
+     */
+    public array $redirects = [
+        'login'          => '/dashboard', // Landing page after login
+        'register'       => '/welcome',   // Landing page after registration
+        'logout'         => 'login',      // Named route or URL path after logout
+        'password_reset' => 'login',      // Named route or URL path after password reset
+        'magic_link'     => '/dashboard', // Landing page after magic link login
+        'action'         => '/dashboard', // Landing page after completing MFA/action
+        'sudo'           => '/settings',  // Landing page after sudo mode verification
+        'denied'         => 'login',      // Named route or URL path when access is denied
+    ];
+}
+```
+
+When resolving redirects internally or in custom modifiers, use `auth_redirect_url($key, $default)`:
+
+```php
+// Resolves directly to '/dashboard'
+$url = auth_redirect_url('login', '/');
+
+// Resolves dynamically to the named route URL (e.g. 'https://example.com/sign-in')
+$url = auth_redirect_url('logout', 'login');
+```
+
 
 
