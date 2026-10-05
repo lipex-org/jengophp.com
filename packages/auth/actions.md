@@ -6,14 +6,14 @@
 
 ## 1. Two-Factor Authentication (`Email2FA`)
 
-When 2FA is enabled for a user, `jengo/auth` interrupts the login session and redirects them to the action verification screen (`auth/action/show`).
+When 2FA is enabled for a user, `jengo/auth` interrupts the login session and redirects them to the action verification screen (`action/show`).
 
 ### How it Works:
 1. `Email2FA::show()` generates a cryptographically secure 6-digit verification code.
 2. Sends the code to the user's email via your pluggable `NotificationSenderInterface`.
 3. Triggers the `mfaChallenge` event.
 4. User submits the code. If valid and unexpired (5-minute TTL), authentication completes.
-5. Users can click **Resend Code** (POST `/auth/action/challenge`) to issue a fresh code or **Cancel** (POST `/auth/action/cancel`) to abort and clear pending state.
+5. Users can click **Resend Code** (POST `/action/challenge`) to issue a fresh code or **Cancel** (POST `/action/cancel`) to abort and clear pending state.
 
 ### Enabling in `app/Config/Auth.php`:
 
@@ -36,7 +36,7 @@ Requires newly registered users to verify their email via a 6-digit security cod
 2. `EmailActivator::show()` generates a 6-digit activation code and sends an email notification.
 3. User enters the code on the verification challenge screen.
 4. On verification, user record is updated to `active = 1` and status becomes `active`.
-5. Supports resending fresh activation codes via `POST /auth/action/challenge`.
+5. Supports resending fresh activation codes via `POST /action/challenge`.
 
 ### Enabling in `app/Config/Auth.php`:
 
@@ -52,7 +52,9 @@ public array $actions = [
 
 ## 3. Creating Custom Actions
 
-To build a custom action (e.g. Terms of Service Acceptance or Forced Password Reset), implement `Jengo\Auth\Contracts\AuthActionInterface`. If your action supports re-issuing challenges (e.g. resending SMS codes), use the `HasActionChallenge` trait:
+To build a custom action (e.g. Terms of Service Acceptance or Forced Password Reset), implement `Jengo\Auth\Contracts\AuthActionInterface`.
+- If your action supports re-issuing challenges (e.g. resending SMS codes), use the `HasActionChallenge` trait.
+- If your action can conditionally determine whether it is pending/required for the user, use the `HasActionPending` trait:
 
 ```php
 <?php
@@ -64,6 +66,7 @@ namespace App\Auth\Actions;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Jengo\Auth\Concerns\HasActionChallenge;
+use Jengo\Auth\Concerns\HasActionPending;
 use Jengo\Auth\Contracts\AuthActionInterface;
 use Jengo\Auth\DTOs\AuthResponseData;
 use Jengo\Auth\Entities\User;
@@ -71,10 +74,20 @@ use Jengo\Auth\Entities\User;
 class RequireTermsAcceptance implements AuthActionInterface
 {
     use HasActionChallenge;
+    use HasActionPending;
 
     public function getActionName(): string
     {
         return 'terms_acceptance';
+    }
+
+    /**
+     * Determine if this action is required for the user.
+     * If false, the pipeline automatically skips this action and advances to the next action or finalizes login.
+     */
+    public function isPending(RequestInterface $request, User $user): bool
+    {
+        return empty($user->terms_accepted_at);
     }
 
     public function show(RequestInterface $request, User $user): ResponseInterface
@@ -121,7 +134,17 @@ class RequireTermsAcceptance implements AuthActionInterface
 
 ---
 
-## 4. Action-Specific View Resolution
+## 4. Conditional Actions & Skipping (`HasActionPending`)
+
+Actions in `jengo/auth` can conditionally decide whether they are required for a user by using the `HasActionPending` trait and implementing `isPending(RequestInterface $request, User $user): bool`.
+
+- **On Login / Register**: If `isPending()` returns `false` for configured actions, the action is bypassed. If all configured actions return `false`, the user is authenticated immediately with zero redirects or prompts.
+- **Actions without `HasActionPending`**: Default to always pending (`true`).
+- **During Multi-Action Pipelines**: When advancing through actions, any action returning `false` for `isPending()` is automatically skipped, firing the `actionSkipped` event and transitioning seamlessly to the next pending action.
+
+---
+
+## 5. Action-Specific View Resolution
 
 You can customize the HTML view or Inertia component for specific actions in `app/Config/Auth.php` using the action's identifier:
 
@@ -148,8 +171,8 @@ When rendering an action view:
 
 ---
 
-## 5. Cancelling Pending Actions
+## 6. Cancelling Pending Actions
 
-If a user wishes to cancel out of a pending authentication action, the route `POST /auth/action/cancel` (`auth.action.cancel`) clears all pending session state (`auth_pending_user_id`, `auth_pending_actions`) and safely redirects back to the login screen.
+If a user wishes to cancel out of a pending authentication action, the route `POST /action/cancel` (`auth.action.cancel`) clears all pending session state (`auth_pending_user_id`, `auth_pending_actions`) and safely redirects back to the login screen.
 
 

@@ -62,7 +62,7 @@ When post-auth actions (like `Email2FA`) are active:
   "status": "info",
   "statusCode": 200,
   "message": "Additional verification required.",
-  "redirect_to": "/auth/action/show"
+  "redirect_to": "/action/show"
 }
 ```
 
@@ -136,7 +136,7 @@ When `EmailActivator` action is active:
   "status": "info",
   "statusCode": 200,
   "message": "Account created. Please verify your email.",
-  "redirect_to": "/auth/action/show"
+  "redirect_to": "/action/show"
 }
 ```
 
@@ -229,7 +229,7 @@ Consumes the magic link token and authenticates the user.
 
 The action pipeline runs between primary authentication and session completion.
 
-### `GET /auth/action/show`
+### `GET /action/show`
 Displays the current pending challenge view or returns challenge context.
 
 - **Route Name (`as`)**: `auth.action.show`
@@ -249,7 +249,7 @@ Displays the current pending challenge view or returns challenge context.
 
 ---
 
-### `POST /auth/action/challenge`
+### `POST /action/challenge`
 Re-issues or resends a fresh challenge (e.g. resending a 6-digit MFA or activation code).
 
 - **Route Name (`as`)**: `auth.action.challenge`
@@ -261,13 +261,13 @@ Re-issues or resends a fresh challenge (e.g. resending a 6-digit MFA or activati
   "status": "info",
   "statusCode": 200,
   "message": "A fresh verification code has been sent to your email.",
-  "redirect_to": "/auth/action/show"
+  "redirect_to": "/action/show"
 }
 ```
 
 ---
 
-### `POST /auth/action/handle`
+### `POST /action/handle`
 Submits verification proof for the active action step in the pipeline.
 
 - **Route Name (`as`)**: `auth.action.handle`
@@ -298,7 +298,7 @@ When additional actions remain in the multi-action pipeline:
   "status": "info",
   "statusCode": 200,
   "message": "Next authentication action required.",
-  "redirect_to": "/auth/action/show"
+  "redirect_to": "/action/show"
 }
 ```
 
@@ -307,7 +307,7 @@ Returns `404` to protect against enumeration attacks.
 
 ---
 
-### `POST /auth/action/cancel` (or `GET /auth/action/cancel`)
+### `POST /action/cancel` (or `GET /action/cancel`)
 Aborts the pending action pipeline, wipes pending session state, and safely returns the user to the login screen.
 
 - **Route Name (`as`)**: `auth.action.cancel` / `auth.action.cancel.get`
@@ -328,7 +328,7 @@ Aborts the pending action pipeline, wipes pending session state, and safely retu
 
 All two-factor settings endpoints require an authenticated session (`auth()->check() === true`).
 
-### `GET /user/two-factor`
+### `GET /two-factor`
 Lists the user's enrolled security factors and available drivers.
 
 - **Route Name (`as`)**: `two-factor.index`
@@ -350,7 +350,7 @@ Lists the user's enrolled security factors and available drivers.
 
 ---
 
-### `POST /user/two-factor/enroll/start`
+### `POST /two-factor/enroll/start`
 Initiates factor enrollment (e.g. generating TOTP secret or WebAuthn registration options).
 
 - **Route Name (`as`)**: `two-factor.enroll.start`
@@ -376,7 +376,7 @@ Initiates factor enrollment (e.g. generating TOTP secret or WebAuthn registratio
 
 ---
 
-### `POST /user/two-factor/enroll/confirm`
+### `POST /two-factor/enroll/confirm`
 Confirms and finalizes factor enrollment with proof of possession.
 
 - **Route Name (`as`)**: `two-factor.enroll.confirm`
@@ -399,7 +399,7 @@ Confirms and finalizes factor enrollment with proof of possession.
 
 ---
 
-### `POST /user/two-factor/unenroll`
+### `POST /two-factor/unenroll`
 Removes an enrolled factor from the user's account.
 
 - **Route Name (`as`)**: `two-factor.unenroll`
@@ -413,14 +413,14 @@ Removes an enrolled factor from the user's account.
 
 ## 5. Sudo Mode (Step-Up Re-Authentication)
 
-### `GET /auth/sudo`
+### `GET /sudo`
 Renders Sudo challenge view or returns list of eligible factors for step-up auth.
 
 - **Route Name (`as`)**: `auth.sudo`
 
 ---
 
-### `POST /auth/sudo/challenge`
+### `POST /sudo/challenge`
 Generates assertion challenge parameters for a specific factor (e.g. WebAuthn challenge payload).
 
 - **Route Name (`as`)**: `auth.sudo.challenge`
@@ -428,7 +428,7 @@ Generates assertion challenge parameters for a specific factor (e.g. WebAuthn ch
 
 ---
 
-### `POST /auth/sudo/verify`
+### `POST /sudo/verify`
 Verifies factor proof and activates the Sudo grace period.
 
 - **Route Name (`as`)**: `auth.sudo.verify`
@@ -452,19 +452,19 @@ Verifies factor proof and activates the Sudo grace period.
 
 ---
 
-### `POST /auth/sudo/exit`
+### `POST /sudo/exit`
 Immediately terminates the active Sudo grace period.
 
 - **Route Name (`as`)**: `auth.sudo.exit`
 
 ---
 
-## 6. Personal Access Tokens (API)
+## 6. Personal Access Tokens
 
 Manage scoped Bearer tokens for mobile clients and API integrations. Requires authenticated session or Bearer token with token-management abilities.
 
-### `GET /api/tokens`
-Lists all active access tokens for the authenticated user.
+### `GET /tokens`
+Lists all active access tokens for the authenticated user (or renders the token management UI).
 
 - **Route Name (`as`)**: `tokens.index`
 - **Response Payload**:
@@ -488,15 +488,15 @@ Lists all active access tokens for the authenticated user.
 
 ---
 
-### `POST /api/tokens`
+### `POST /tokens` or `POST /tokens/create`
 Generates a new Personal Access Token with defined scopes.
 
-- **Route Name (`as`)**: `tokens.create`
+- **Route Name (`as`)**: `tokens.create` (and `tokens.create.named`)
 - **Request Body**:
 
 | Field | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
-| `name` | `string` | **Yes** | Descriptive token label (`required\|min_length[2]\|max_length[100]`). |
+| `name` | `string` | **Yes** | Descriptive token label (`required|min_length[2]|max_length[100]`). |
 | `abilities` | `array` | No | List of permitted scopes (defaults to `['*']`). Example: `["posts:read", "users:create"]`. |
 | `expires_at` | `string` | No | Optional ISO-8601 expiration timestamp (e.g. `"2027-01-01 00:00:00"`). |
 
@@ -518,10 +518,10 @@ Generates a new Personal Access Token with defined scopes.
 
 ---
 
-### `DELETE /api/tokens/(:segment)`
+### `DELETE /tokens/(:segment)` or `POST /tokens/revoke/(:segment)`
 Revokes and deletes a specific access token.
 
-- **Route Name (`as`)**: `tokens.revoke`
+- **Route Name (`as`)**: `tokens.revoke` (and `tokens.revoke.post`)
 - **Path Parameter**: Token ID (`integer`).
 - **Successful Response (`200 OK`)**:
 ```json
@@ -532,3 +532,76 @@ Revokes and deletes a specific access token.
   "message": "Token revoked successfully."
 }
 ```
+
+---
+
+## 7. Social / OAuth2 Authentication & Password Provisioning
+
+Third-party OAuth login, callback handling, and password provisioning for social users.
+
+### `GET /oauth/(:segment)`
+Redirects the user to the third-party OAuth provider authorization screen (e.g. Google, GitHub).
+
+- **Route Name (`as`)**: `auth.oauth.redirect`
+- **Path Parameter**: `provider` (`string`, e.g. `'google'`, `'github'`).
+- **Response**: `302 Found` HTTP redirect to the provider's OAuth authorization URL with session-bound CSRF state.
+
+---
+
+### `GET /oauth/callback/(:segment)`
+Receives the authorization code from the provider, exchanges it for access tokens, loads profile info, and executes `findOrCreateUser()`.
+
+- **Route Name (`as`)**: `auth.oauth.callback`
+- **Path Parameter**: `provider` (`string`, e.g. `'google'`, `'github'`).
+- **Query Parameters**:
+  - `code`: Authorization code from provider.
+  - `state`: CSRF state string.
+- **Successful Response (JSON Modifier)**:
+```json
+{
+  "action": "social.login",
+  "status": "success",
+  "statusCode": 200,
+  "message": "Successfully signed in with Google.",
+  "user": {
+    "id": 12,
+    "username": "janedoe",
+    "email": "jane@example.com",
+    "active": true
+  },
+  "redirect_to": "/dashboard"
+}
+```
+
+---
+
+### `GET /set-password`
+Renders the password creation form for authenticated users who signed up via social login and do not yet have a password.
+
+- **Route Name (`as`)**: `auth.password.set.view`
+- **Response**: `set_password` view / Inertia component.
+
+---
+
+### `POST /set-password`
+Validates and provisions a new password for the authenticated user.
+
+- **Route Name (`as`)**: `auth.password.set`
+- **Request Body**:
+
+| Field | Type | Required | Rules & Description |
+| :--- | :--- | :--- | :--- |
+| `password` | `string` | **Yes** | `required|min_length[8]`. New account password. |
+| `password_confirm` | `string` | **Yes** | `required|matches[password]`. Confirmation matching password. |
+
+- **Successful Response (JSON Modifier)**:
+```json
+{
+  "action": "password.set",
+  "status": "success",
+  "statusCode": 200,
+  "message": "Password has been successfully set.",
+  "redirect_to": "/dashboard"
+}
+```
+

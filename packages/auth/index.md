@@ -20,6 +20,7 @@
 | [Response Modifiers](./response-modifiers) | Switch between HTML views, JSON envelopes, and Inertia responses. |
 | [API & Payload Reference](./api-reference) | Full HTTP endpoint specifications, request payloads, and response structures. |
 | [Custom Notification Senders](./notifications) | Queue or replace auth emails and codes. |
+| [Social / OAuth2 Authentication](./social) | Third-party sign-in with Google, GitHub, email auto-linking, and password provisioning. |
 | [Custom Guards & Tokens](./guards) | Register custom authentication drivers and manage token abilities. |
 | [CLI Commands](./cli) | All `jengo:auth` and `vima` Spark commands. |
 

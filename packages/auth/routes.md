@@ -36,35 +36,51 @@ RouteRegistrar::tokens($routes, [
     'filter' => 'auth:token',
 ]);
 
-// 7. Publish All Features
+// 7. Social / OAuth2 Sign-In (redirect & callback) -> [Social Guide](./social)
+RouteRegistrar::social($routes);
+
+// 8. Password Provisioning / Set Password -> [Social Guide](./social#5-password-provisioning-workflow)
+RouteRegistrar::setPassword($routes);
+
+// 9. Publish All Features
 RouteRegistrar::all($routes);
 ```
 
 You can also call these directly via `auth()` or `service('auth')`:
 
 ```php
-auth()->coreRoutes($routes);      // Core authentication
-auth()->actionRoutes($routes);    // Post-auth action pipeline (MFA)
-auth()->magicLinkRoutes($routes); // Passwordless magic links
-auth()->twoFactorRoutes($routes); // Multi-factor management
-auth()->sudoRoutes($routes);      // Sudo privileged step-up mode
-auth()->tokenRoutes($routes);     // Scoped Personal Access Tokens
+auth()->coreRoutes($routes);        // Core authentication
+auth()->actionRoutes($routes);      // Post-auth action pipeline (MFA)
+auth()->magicLinkRoutes($routes);   // Passwordless magic links
+auth()->twoFactorRoutes($routes);   // Multi-factor management
+auth()->sudoRoutes($routes);        // Sudo privileged step-up mode
+auth()->tokenRoutes($routes);       // Scoped Personal Access Tokens
+auth()->socialRoutes($routes);      // Social / OAuth2 routes
+auth()->setPasswordRoutes($routes); // Password provisioning routes
 ```
 
 ---
 
-## 2. Advanced Customization & Prefixes
+## 2. Advanced Customization & Global Configuration
 
-All route helper methods accept an `$options` array for granular URL prefixing, middleware filters, slug remapping, and controller overrides:
+You can configure options globally across all route helper calls with `RouteRegistrar::configure()`, or pass `$options` per method call:
 
 ```php
-RouteRegistrar::core($routes, [
-    'prefix'       => 'auth',
-    'paths'        => [
+// app/Config/Routes.php
+use Jengo\Auth\Support\RouteRegistrar;
+
+// 1. Global Default Configuration
+RouteRegistrar::configure([
+    'prefix' => 'auth',
+    'paths'  => [
         'login'    => 'sign-in',
         'logout'   => 'sign-out',
         'register' => 'join',
     ],
+]);
+
+// 2. Per-Registration Options (merged with global defaults)
+RouteRegistrar::core($routes, [
     'logoutMethod' => 'post', // 'post' (default) or 'get'
     'controllers'  => [
         'login'    => \App\Controllers\CustomLoginController::class,
@@ -115,22 +131,28 @@ Below is the complete list of flow names available for `only` and `except`, alon
 | | `POST` | `magic-link` | `magic-link.send` | `MagicLinkController::sendLink` |
 | | `GET` | `magic-link/verify/(:segment)` | `magic-link.verify` | `MagicLinkController::verifyLink` |
 | | `GET` | `magic-link/verify` | `magic-link.verify.query` | `MagicLinkController::verifyLink` |
-| [**`action`**](./actions) | `GET` | `auth/action/show` | `auth.action.show` | `ActionController::show` |
-| | `POST` | `auth/action/challenge` | `auth.action.challenge` | `ActionController::challenge` |
-| | `POST` | `auth/action/handle` | `auth.action.handle` | `ActionController::handle` |
-| | `POST` | `auth/action/cancel` | `auth.action.cancel` | `ActionController::cancel` |
-| | `GET` | `auth/action/cancel` | `auth.action.cancel.get` | `ActionController::cancel` |
-| [**`sudo`**](./sudo) | `GET` | `auth/sudo` | `auth.sudo` | `SudoController::index` |
-| | `POST` | `auth/sudo/challenge` | `auth.sudo.challenge` | `SudoController::challenge` |
-| | `POST` | `auth/sudo/verify` | `auth.sudo.verify` | `SudoController::verify` |
-| | `POST` | `auth/sudo/exit` | `auth.sudo.exit` | `SudoController::exit` |
-| [**`two-factor`**](./two-factor) | `GET` | `user/two-factor` | `two-factor.index` | `TwoFactorSettingsController::index` |
-| | `POST` | `user/two-factor/enroll/start` | `two-factor.enroll.start` | `TwoFactorSettingsController::startEnrollment` |
-| | `POST` | `user/two-factor/enroll/confirm` | `two-factor.enroll.confirm` | `TwoFactorSettingsController::confirmEnrollment` |
-| | `POST` | `user/two-factor/unenroll` | `two-factor.unenroll` | `TwoFactorSettingsController::unenroll` |
-| [**`tokens`**](./guards#token-prefix--formatting) | `GET` | `api/tokens` | `tokens.index` | `TokenController::index` |
-| | `POST` | `api/tokens` | `tokens.create` | `TokenController::create` |
-| | `DELETE`| `api/tokens/(:segment)` | `tokens.revoke` | `TokenController::revoke` |
+| [**`action`**](./actions) | `GET` | `action/show` | `auth.action.show` | `ActionController::show` |
+| | `POST` | `action/challenge` | `auth.action.challenge` | `ActionController::challenge` |
+| | `POST` | `action/handle` | `auth.action.handle` | `ActionController::handle` |
+| | `POST` | `action/cancel` | `auth.action.cancel` | `ActionController::cancel` |
+| | `GET` | `action/cancel` | `auth.action.cancel.get` | `ActionController::cancel` |
+| [**`sudo`**](./sudo) | `GET` | `sudo` | `auth.sudo` | `SudoController::index` |
+| | `POST` | `sudo/challenge` | `auth.sudo.challenge` | `SudoController::challenge` |
+| | `POST` | `sudo/verify` | `auth.sudo.verify` | `SudoController::verify` |
+| | `POST` | `sudo/exit` | `auth.sudo.exit` | `SudoController::exit` |
+| [**`two-factor`**](./two-factor) | `GET` | `two-factor` | `two-factor.index` | `TwoFactorSettingsController::index` |
+| | `POST` | `two-factor/enroll/start` | `two-factor.enroll.start` | `TwoFactorSettingsController::startEnrollment` |
+| | `POST` | `two-factor/enroll/confirm` | `two-factor.enroll.confirm` | `TwoFactorSettingsController::confirmEnrollment` |
+| | `POST` | `two-factor/unenroll` | `two-factor.unenroll` | `TwoFactorSettingsController::unenroll` |
+| [**`tokens`**](./guards#token-prefix--formatting) | `GET` | `tokens` | `tokens.index` | `TokenController::index` |
+| | `POST` | `tokens` | `tokens.create` | `TokenController::create` |
+| | `POST` | `tokens/create` | `tokens.create.named` | `TokenController::create` |
+| | `DELETE`| `tokens/(:segment)` | `tokens.revoke` | `TokenController::revoke` |
+| | `POST` | `tokens/revoke/(:segment)` | `tokens.revoke.post` | `TokenController::revoke` |
+| [**`social`**](./social) | `GET` | `oauth/(:segment)` | `auth.oauth.redirect` | `OAuthController::redirect` |
+| | `GET` | `oauth/callback/(:segment)` | `auth.oauth.callback` | `OAuthController::callback` |
+| [**`set-password`**](./social#5-password-provisioning-workflow) | `GET` | `set-password` | `auth.password.set.view` | `SetPasswordController::showSetPassword` |
+| | `POST` | `set-password` | `auth.password.set` | `SetPasswordController::attemptSetPassword` |
 
 ---
 

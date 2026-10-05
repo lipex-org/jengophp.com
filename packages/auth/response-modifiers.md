@@ -8,6 +8,7 @@
 
 | Modifier | Class | Best For | Behavior |
 | :--- | :--- | :--- | :--- |
+| **Universal Modifier (Default)** | `Jengo\Auth\Modifiers\UniversalModifier` | Multi-Client Apps / Hybrids | Dynamically auto-detects `X-Inertia` headers for Inertia transitions, `Accept: application/json` / AJAX for API calls, and routes full-page browser visits to the configured `$viewRenderer` (`'standard'` or `'inertia'`). |
 | **Standard Views** | `Jengo\Auth\Modifiers\StandardViewModifier` | Traditional MPAs | Renders CI4 view templates, handles session flash errors, and HTTP 302 redirects. |
 | **JSON REST API** | `Jengo\Auth\Modifiers\JsonModifier` | Mobile Apps / SPAs / APIs | Returns uniform JSON payloads with HTTP status codes (`200`, `201`, `401`, `403`, `422`). |
 | **Inertia.js SPA** | `Jengo\Auth\Modifiers\InertiaModifier` | React, Vue, Svelte SPAs | Returns `Inertia::render(...)` component responses, flashes validation errors, and passes branding props. |
@@ -22,14 +23,21 @@ In `app/Config/Auth.php`:
 namespace Config;
 
 use Jengo\Auth\Config\Auth as BaseAuth;
-use Jengo\Auth\Modifiers\InertiaModifier;
+use Jengo\Auth\Modifiers\UniversalModifier;
 
 class Auth extends BaseAuth
 {
     /**
      * Set the active response modifier.
+     * UniversalModifier is the default, delegating dynamically based on request headers.
      */
-    public string $responseModifier = InertiaModifier::class;
+    public string $responseModifier = UniversalModifier::class;
+
+    /**
+     * For full-page browser navigation with UniversalModifier:
+     * 'standard' (renders HTML views) or 'inertia' (renders Inertia root and component).
+     */
+    public string $viewRenderer = 'standard';
 }
 ```
 
@@ -89,9 +97,9 @@ When using `StandardViewModifier`, `$brand` is injected into the view template v
 
 ---
 
-## 3. Customizing View & Component Paths
+## 3. Customizing View & Component Templates
 
-You can configure custom view paths or Inertia page components in `app/Config/Auth.php`:
+The `$views` array in `app/Config/Auth.php` is the **single source of truth** for both standard HTML view paths and Inertia page component paths:
 
 ```php
 public array $views = [
@@ -103,8 +111,11 @@ public array $views = [
     'action_mfa'          => 'Pages/Auth/TwoFactorChallenge',
     'sudo'                => 'Pages/Auth/SudoChallenge',
     'two_factor_settings' => 'Pages/Account/TwoFactorSettings',
+    'tokens'              => 'Pages/Account/Tokens',
 ];
 ```
+
+When using `UniversalModifier` with `$viewRenderer = 'inertia'` (or `InertiaModifier`), `InertiaModifier` directly looks up the component name registered in `$views` without guessing. If the modifier or view is missing, an explicit exception or error is raised.
 
 ---
 

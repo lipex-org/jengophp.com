@@ -1,6 +1,6 @@
 # The Gatekeeper (Auth)
 
-Jengo's "Gatekeeper" provides a robust, beautifully styled authentication system out of the box, built on top of the official **CodeIgniter Shield**.
+Jengo's "Gatekeeper" (`jengo/auth`) provides a unified, enterprise-ready authentication and authorization engine built natively for **CodeIgniter 4**, powered by **Vima**.
 
 ## Installation
 
@@ -13,24 +13,26 @@ jengo new my-app --auth
 If you already have a Jengo project and want to add authentication later, you can run:
 
 ```bash
-php spark jengo:setup auth
+php spark jengo:auth setup
+php spark migrate
 ```
 
-## Smart Integration
+## Smart Architecture & Response Modifiers
 
-The Jengo installer is smart enough to adapt the authentication UI based on your chosen starter kit.
+Jengo Auth is built around **Universal Modifier** architecture that dynamically detects whether an incoming request expects traditional CodeIgniter 4 HTML views, REST API JSON envelopes, or Inertia.js Single Page Application responses:
 
 ### 1. Default PHP Kit
-If you are using the default PHP kit, the installer will publish highly polished, Tailwind-styled `login.php` and `register.php` views directly into `app/Views/Shield/`. It automatically configures Shield to use these custom views instead of the default ones.
+If you are using the default PHP kit, standard responsive Tailwind-styled views (`login.php`, `register.php`, `two_factor_settings.php`, `set_password.php`, etc.) are rendered with standard flash redirects.
 
-### 2. Inertia SPA Kits (React, Vue, Svelte)
-If you install the Gatekeeper alongside an Inertia kit, Jengo skips the PHP views entirely. Instead, it:
-1. Publishes a suite of Inertia-friendly controllers to `app/Controllers/Auth/`:
-   - `LoginController`: Handles SPA login and logout.
-   - `RegisterController`: Handles SPA user registration.
-   - `MagicLinkController`: Manages email-based, passwordless login.
-   - `ActionController`: Handles multi-step auth actions (e.g., 2FA, Email Verification).
-2. Re-routes the default Shield endpoints to these custom controllers.
-3. Scaffolds complete, working authentication pages in your chosen framework (React, Vue, or Svelte).
+### 2. Inertia SPA Kits (Vue, React, Svelte)
+When installed alongside an Inertia starter kit, Jengo Auth:
+1. Configures `Config/Auth.php` with `viewRenderer = 'inertia'` and publishes component stubs (`auth/login`, `auth/register`, `auth/two_factor_settings`, `auth/set_password`, etc.) to `resources/js/inertia/pages/auth/`.
+2. Serves seamless, page-refresh-free authentication across Vue, React, and Svelte frontend frameworks.
 
-This ensures a seamless, page-refresh-free authentication experience for modern Single Page Applications.
+### 3. Core Features Included Out of the Box
+- **Universal Guard**: Auto-detects stateless Bearer tokens for APIs and falls back to session cookies and encrypted remember-me tokens for web.
+- **Social / OAuth2 Authentication**: Sign in with Google, GitHub, and custom providers with automatic user provisioning, email auto-linking, and password provisioning (`/set-password`).
+- **Multi-Factor & Sudo Step-Up**: TOTP authenticator apps, Passkeys / WebAuthn, Email OTP codes, Recovery Codes, and elevated Sudo mode.
+- **Vima RBAC/ABAC**: Full role hierarchies, fine-grained permissions, ABAC policies, direct grants, explicit denies, and TypeScript map generation.
+- **Personal Access Tokens (PAT)**: Scoped API token lifecycle management.
+- **Passwordless Magic Links**: Secure, time-limited one-click email logins.

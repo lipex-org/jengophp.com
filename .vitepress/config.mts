@@ -182,6 +182,7 @@ export default defineConfig({
                 { text: 'Form Handlers', link: '/packages/auth/forms' },
                 { text: 'Response Modifiers', link: '/packages/auth/response-modifiers' },
                 { text: 'Custom Notification Senders', link: '/packages/auth/notifications' },
+                { text: 'Social / OAuth2 Authentication', link: '/packages/auth/social' },
                 { text: 'Custom Guards & Tokens', link: '/packages/auth/guards' },
                 { text: 'CLI Commands', link: '/packages/auth/cli' },
                 { text: 'API reference', link: '/packages/auth/api-reference' },

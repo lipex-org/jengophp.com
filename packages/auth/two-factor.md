@@ -119,3 +119,18 @@ Register your custom driver dynamically:
 ```php
 two_factor()->extend('duo', new DuoPushDriver());
 ```
+
+---
+
+## 5. Inertia Frontend Integration & Settings
+
+When managing two-factor authentication in Inertia SPAs (e.g. `two_factor_settings.vue` or `TwoFactorSettings.tsx`):
+
+1. **Start Enrollment**:
+   Submitting `router.post('/two-factor/enroll/start', { factor: 'totp' })` triggers enrollment initialization on the backend.
+2. **Flash Data Delivery**:
+   On redirect back to the 2FA settings page, the generated QR data URI, secret key, WebAuthn challenge options, or emergency recovery codes are delivered via `page.props.flash.enrollment_data` and `page.props.flash.enrollment_factor`.
+3. **Confirm Enrollment**:
+   Users confirm using `router.post('/two-factor/enroll/confirm', { factor: 'totp', code })` or by submitting WebAuthn proof.
+4. **Unenroll**:
+   Users remove factors using `router.post('/two-factor/unenroll', { factor })`.

@@ -83,7 +83,7 @@ class RepositoryController extends BaseController
 | `lifetime` | `int\|string` | `'2 hours'` | Grace period duration before re-verification is required (e.g. `'2 hours'`, `'15 minutes'`, `7200`). |
 | `factors` | `array` | `['passkey', 'totp', 'password', 'email_otp', 'recovery_code']` | Whitelist of permitted verification factors for this action. |
 | `forceFresh` | `bool` | `false` | When `true`, bypasses any active Sudo session and forces immediate verification. |
-| `redirectTo` | `?string` | `null` | Custom redirect URL for HTML web clients (defaults to `/auth/sudo`). |
+| `redirectTo` | `?string` | `null` | Custom redirect URL for HTML web clients (defaults to `/sudo`). |
 
 ---
 
@@ -108,7 +108,7 @@ Returns an HTTP `403 Forbidden` with the `X-Jengo-Sudo-Required: true` header:
 ```
 
 ### Inertia.js SPAs & Traditional Web Requests
-Saves the intended destination URL in session and redirects to `/auth/sudo` (or displays an in-place challenge modal).
+Saves the intended destination URL in session and redirects to `/sudo` (or displays an in-place challenge modal).
 
 ---
 
@@ -141,7 +141,7 @@ When auth routes are registered (`auth()->routes($routes)`), the following Sudo 
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/auth/sudo` | Renders challenge UI / lists available factors. |
-| `POST` | `/auth/sudo/challenge` | Generates challenge payload (e.g. WebAuthn assertion options). |
-| `POST` | `/auth/sudo/verify` | Verifies submitted proof (Passkey assertion, TOTP code, password) and activates Sudo. |
-| `POST` | `/auth/sudo/exit` | Exits Sudo mode immediately. |
+| `GET` | `/sudo` | Renders challenge UI / lists available factors. |
+| `POST` | `/sudo/challenge` | Generates challenge payload (e.g. WebAuthn assertion options). |
+| `POST` | `/sudo/verify` | Verifies submitted proof (Passkey assertion, TOTP code, password) and activates Sudo. |
+| `POST` | `/sudo/exit` | Exits Sudo mode immediately. |
