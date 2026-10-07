@@ -58,13 +58,13 @@ CodeIgniter 4 automatically maps `.env` variables to config properties using the
 
 ```env
 # Global Settings
-Pesa.default = mpesa
-Pesa.currency = KES
+pesa.default = mpesa
+pesa.currency = KES
 
 # M-Pesa Settings
-Pesa.gateways.mpesa.env = sandbox
-Pesa.gateways.mpesa.shortcode = 174379
-Pesa.gateways.mpesa.consumer_key = your_consumer_key
-Pesa.gateways.mpesa.consumer_secret = your_consumer_secret
-Pesa.gateways.mpesa.passkey = your_passkey
+pesa.gateways.mpesa.env = sandbox
+pesa.gateways.mpesa.shortcode = 174379
+pesa.gateways.mpesa.consumer_key = your_consumer_key
+pesa.gateways.mpesa.consumer_secret = your_consumer_secret
+pesa.gateways.mpesa.passkey = your_passkey
 ```
