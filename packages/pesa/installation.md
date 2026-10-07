@@ -8,24 +8,26 @@ composer require jengo/pesa
 
 ---
 
-## 1. Run Database Migrations
+## 1. Automated Installation (Recommended)
 
-`jengo/pesa` includes a migration for the `pesa_transactions` ledger table to track transaction states and protect against duplicate webhook events.
-
-Run the migration using Spark:
+Run the automated Jengo installer to publish configuration and execute database migrations in one command:
 
 ```bash
-php spark migrate -k jengo/pesa
+php spark jengo:install pesa
 ```
 
 ---
 
-## 2. Publish Configuration
+## 2. Manual Installation
 
-Publish the configuration file to your `app/Config/` directory:
+Alternatively, you can run the individual steps manually:
 
+### Publish Configuration
 ```bash
 php spark config:publish Jengo\\Pesa\\Config\\Pesa
 ```
 
-This creates `app/Config/Pesa.php` where you can configure gateway credentials, currency, and ledger options.
+### Run Database Migrations
+```bash
+php spark migrate -k jengo/pesa
+```
