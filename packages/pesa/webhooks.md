@@ -1,6 +1,6 @@
-# Webhooks & Events
+# Webhooks & Callbacks
 
-`jengo/pesa` includes an auto-routed, CSRF-exempt webhook controller accessible at `/pesa/webhook/{gateway}` to process asynchronous gateway notifications.
+`jengo/pesa` includes an auto-routed, CSRF-exempt webhook controller accessible at `/pesa/webhook/{gateway}` to process asynchronous gateway notifications and IPN callbacks.
 
 ---
 
@@ -35,56 +35,17 @@ Each gateway driver implements a dedicated `WebhookHandlerInterface`:
 
 ---
 
-## 3. Strongly-Typed Payment Events
-
-All payment state changes emit standard CodeIgniter events. Register listeners in `app/Config/Events.php`:
-
-```php
-use CodeIgniter\Events\Events;
-use Jengo\Pesa\Events\PaymentInitiated;
-use Jengo\Pesa\Events\PaymentSucceeded;
-use Jengo\Pesa\Events\PaymentFailed;
-use Jengo\Pesa\Events\PaymentReversed;
-
-// 1. Payment Initiated
-Events::on('pesa.payment_initiated', static function (PaymentInitiated $event) {
-    $transaction = $event->transaction;
-    log_message('info', "Payment initiated for reference: {$transaction->reference}");
-});
-
-// 2. Payment Succeeded
-Events::on('pesa.payment_succeeded', static function (PaymentSucceeded $event) {
-    $tx = $event->transaction;
-    
-    $receipt = $tx->receipt_number; // e.g. QKH7189XYZ
-    $amount  = $tx->amount;
-    $ref     = $tx->reference;
-    $phone   = $tx->payer_phone;
-    
-    // Fulfill order, provision account, or send confirmation SMS
-});
-
-// 3. Payment Failed
-Events::on('pesa.payment_failed', static function (PaymentFailed $event) {
-    $tx = $event->transaction;
-    $reason = $event->reason; // e.g. "Request cancelled by user."
-    
-    // Notify customer or unlock reserved cart inventory
-});
-
-// 4. Payment Reversed
-Events::on('pesa.payment_reversed', static function (PaymentReversed $event) {
-    $tx = $event->transaction;
-    
-    // Handle customer refund or revoke subscription
-});
-```
-
----
-
-## 4. Webhook Acknowledgment Responses
+## 3. Webhook Acknowledgment Responses
 
 `PesaWebhookController` automatically returns the exact HTTP response format required by each provider:
 - **M-Pesa**: `{"ResultCode": 0, "ResultDesc": "Success"}`
 - **Pesapal**: `{"status": "200", "message": "OK"}`
 - **Stripe**: `{"received": true}`
+
+---
+
+## 4. Dispatched Events
+
+Upon processing a webhook, `jengo/pesa` updates the transaction ledger and dispatches corresponding events (`pesa.payment_succeeded`, `pesa.payment_failed`, `pesa.payment_reversed`).
+
+See the [Events & Listeners](/packages/pesa/events) guide for full event signatures and examples.

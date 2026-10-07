@@ -14,7 +14,8 @@ A unified multi-gateway payment processing subsystem for CodeIgniter 4 and the J
   - **OAuth Token Caching**: Automatic token reuse via CI4 Cache.
 - **Multi-Gateway Drivers**: Switch between `mpesa`, `pesapal`, `stripe`, and `fake` drivers seamlessly.
 - **Transaction Ledger (`pesa_transactions`)**: Full lifecycle logging with state machine (`pending` &rarr; `successful` | `failed` | `reversed`) and idempotency protection against duplicate callbacks.
-- **Zero-Boilerplate Webhooks**: Pre-routed webhook controller (`/pesa/webhook/{gateway}`) with signature verification and typed events (`PaymentInitiated`, `PaymentSucceeded`, `PaymentFailed`, `PaymentReversed`).
+- **Zero-Boilerplate Webhooks**: Pre-routed webhook controller (`/pesa/webhook/{gateway}`) with signature verification.
+- **Lifecycle Events**: Typed events (`PaymentInitiated`, `PaymentSucceeded`, `PaymentFailed`, `PaymentReversed`).
 - **Spark CLI Tools**: Nested variants (`php spark jengo:pesa mpesa register-c2b`).
 - **Extensible Architecture**: Add custom gateway drivers via `Pesa::getManager()->extend()`.
 
@@ -27,8 +28,9 @@ A unified multi-gateway payment processing subsystem for CodeIgniter 4 and the J
 3. [Quick Start](/packages/pesa/quick-start)
 4. [M-Pesa Daraja Workflows](/packages/pesa/mpesa)
 5. [Hosted Checkouts (Pesapal & Stripe)](/packages/pesa/hosted-checkouts)
-6. [Webhooks & Events](/packages/pesa/webhooks)
-7. [Transaction Ledger & Entities](/packages/pesa/ledger)
-8. [CLI Commands](/packages/pesa/cli)
-9. [Custom Gateways & Extensibility](/packages/pesa/custom-gateways)
-10. [Testing with Fake Gateway](/packages/pesa/testing)
+6. [Webhooks & Callbacks](/packages/pesa/webhooks)
+7. [Events & Listeners](/packages/pesa/events)
+8. [Transaction Ledger & Entities](/packages/pesa/ledger)
+9. [CLI Commands](/packages/pesa/cli)
+10. [Custom Gateways & Extensibility](/packages/pesa/custom-gateways)
+11. [Testing with Fake Gateway](/packages/pesa/testing)
