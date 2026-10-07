@@ -211,10 +211,13 @@ export default defineConfig({
               text: 'jengo/pesa', link: '/packages/pesa/', collapsed: true, items: [
                 { text: 'Installation', link: '/packages/pesa/installation' },
                 { text: 'Configuration', link: '/packages/pesa/configuration' },
+                { text: 'Quick Start', link: '/packages/pesa/quick-start' },
                 { text: 'M-Pesa Daraja Workflows', link: '/packages/pesa/mpesa' },
                 { text: 'Hosted Checkouts (Pesapal & Stripe)', link: '/packages/pesa/hosted-checkouts' },
                 { text: 'Webhooks & Events', link: '/packages/pesa/webhooks' },
+                { text: 'Transaction Ledger & Entities', link: '/packages/pesa/ledger' },
                 { text: 'CLI Commands', link: '/packages/pesa/cli' },
+                { text: 'Custom Gateways & Extensibility', link: '/packages/pesa/custom-gateways' },
                 { text: 'Testing with Fake Gateway', link: '/packages/pesa/testing' }
               ]
             },

@@ -1,6 +1,6 @@
 # M-Pesa Daraja Workflows
 
-The `mpesa` driver provides a unified interface for Safaricom Daraja 3.0 operations.
+The `mpesa` driver provides a unified interface for Safaricom Daraja 3.0 operations, including STK Push (Lipa Na M-Pesa Online), C2B (Customer to Business), B2C (Business to Customer payouts), and status queries.
 
 ---
 
@@ -26,17 +26,22 @@ if ($response->isPending()) {
 }
 ```
 
+### Automatic Phone Sanitization
+`StkRequest` automatically normalizes common Kenyan phone number formats (`07XXXXXXXX`, `01XXXXXXXX`, `+2547XXXXXXXX`, `2547XXXXXXXX`) to standard international MSISDN format (`2547XXXXXXXX`).
+
 ---
 
 ## 2. STK Status Query
 
-Query the status of an ongoing or completed STK push transaction:
+Query the status of an ongoing or completed STK push transaction in real time:
 
 ```php
 $status = Pesa::gateway('mpesa')->queryStkStatus($checkoutRequestId);
 
 if ($status->isSuccessful()) {
     echo $status->receiptNumber; // e.g. QKH7189XYZ
+} elseif ($status->isFailed()) {
+    echo $status->resultDesc;    // e.g. "Request cancelled by user."
 }
 ```
 
@@ -63,17 +68,46 @@ if ($payout->successful) {
 }
 ```
 
+### Security Credential Encryption
+For live B2C operations, Safaricom requires encrypting the initiator plaintext password with Safaricom's X509 public certificate. `jengo/pesa` handles this automatically:
+
+```php
+// In app/Config/Pesa.php:
+'mpesa' => [
+    'initiator_name'     => 'api_initiator',
+    'initiator_password' => 'PlaintextPassword123',
+    'cert_path'          => WRITEPATH . 'certs/ProductionCertificate.cer',
+    // Or supply pre-encrypted credential directly:
+    // 'security_credential' => 'EncryptedBase64String...',
+]
+```
+
 ---
 
-## 4. C2B URL Registration
+## 4. C2B URL Registration & Instant Confirmation
 
-Register validation and confirmation URLs for your Paybill or Till number using the Spark CLI command or programmatically:
+Register validation and confirmation URLs for your Paybill or Till number so Safaricom posts transactions directly to your app:
 
+### Via Spark CLI
+```bash
+php spark jengo:pesa mpesa register-c2b --shortcode=600999
+```
+
+### Programmatically
 ```php
 $result = Pesa::gateway('mpesa')->registerC2BUrls(
     shortCode: '600999',
     responseType: 'Completed',
-    validationUrl: 'https://myapp.com/pesa/webhook/mpesa',
-    confirmationUrl: 'https://myapp.com/pesa/webhook/mpesa'
+    validationUrl: route_to('pesa.webhook', 'mpesa'),
+    confirmationUrl: route_to('pesa.webhook', 'mpesa')
 );
 ```
+
+### Direct C2B Paybill Ingest
+When a customer pays via Paybill/Till directly (without prior STK Push), `PesaWebhookController` automatically catches the callback, registers the new transaction record in `pesa_transactions` with `type: 'c2b_payment'`, and fires `PaymentSucceeded`.
+
+---
+
+## 5. Automatic OAuth Token Caching
+
+The `MpesaAuthenticator` retrieves OAuth 2.0 Bearer tokens from Safaricom Daraja 3.0 (`/oauth/v1/generate?grant_type=client_credentials`) and caches them securely in CodeIgniter 4's cache store for 55 minutes, avoiding rate limiting and reducing API latency.
