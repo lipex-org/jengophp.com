@@ -1,6 +1,6 @@
 # M-Pesa Daraja Workflows
 
-The `mpesa` driver provides a unified interface for Safaricom Daraja 2.0 operations.
+The `mpesa` driver provides a unified interface for Safaricom Daraja 3.0 operations.
 
 ---
 

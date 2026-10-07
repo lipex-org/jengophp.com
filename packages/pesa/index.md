@@ -1,12 +1,12 @@
 # Jengo Pesa (`jengo/pesa`)
 
-A unified multi-gateway payment processing subsystem for CodeIgniter 4 and the Jengo Framework, featuring first-class support for Kenyan and African payment networks (M-Pesa Daraja 2.0, Pesapal v3, Flutterwave) alongside global providers (Stripe, PayPal).
+A unified multi-gateway payment processing subsystem for CodeIgniter 4 and the Jengo Framework, featuring first-class support for Kenyan and African payment networks (M-Pesa Daraja 3.0, Pesapal v3, Flutterwave) alongside global providers (Stripe, PayPal).
 
 ---
 
 ## Key Capabilities
 
-- **M-Pesa Daraja 2.0 Engine**:
+- **M-Pesa Daraja 3.0 Engine**:
   - **STK Push (Lipa Na M-Pesa Online)** with phone sanitization and password generation.
   - **C2B (Customer to Business)**: URL registration and instant confirmation handling for Paybills and Till numbers (Buy Goods).
   - **B2C (Business to Customer)**: Automated payouts, dividends, and salary disbursements.

@@ -8,26 +8,28 @@ composer require jengo/pesa
 
 ---
 
-## 1. Automated Installation (Recommended)
+## 1. Run the Jengo Installer
 
-Run the automated Jengo installer to publish configuration and execute database migrations in one command:
+Run the installer to publish the configuration file and run the internal migrations:
 
 ```bash
 php spark jengo:install pesa
 ```
 
+This will automatically:
+- Publish `app/Config/Pesa.php`
+- Run database migrations (`pesa_transactions` table) via `php spark migrate --all`
+
 ---
 
-## 2. Manual Installation
+## 2. Manual Installation (Alternative)
 
-Alternatively, you can run the individual steps manually:
+If you prefer to configure manually:
 
-### Publish Configuration
+1. Copy `vendor/jengo/pesa/src/Config/Pesa.php` to `app/Config/Pesa.php` and adjust namespace to `namespace Config;` extending `Jengo\Pesa\Config\Pesa`.
+2. Run database migrations:
+
 ```bash
-php spark config:publish Jengo\\Pesa\\Config\\Pesa
+php spark migrate --all
 ```
 
-### Run Database Migrations
-```bash
-php spark migrate -k jengo/pesa
-```
