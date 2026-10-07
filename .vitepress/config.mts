@@ -19,6 +19,7 @@ export default defineConfig({
           { text: "Storage", link: "/packages/storage/" },
           { text: "Authentication", link: "/packages/auth/" },
           { text: "API", link: "/packages/api/" },
+          { text: "Pesa (Payments)", link: "/packages/pesa/" },
           { text: "Broadcasting", link: "/packages/broadcasting/" },
           { text: "Artificial Intelligence(AI)", link: "/packages/ai/" },
           { text: "PDF", link: "/packages/pdf/" },
@@ -206,6 +207,17 @@ export default defineConfig({
           text: 'Real-Time & Networking',
           collapsed: false,
           items: [
+            {
+              text: 'jengo/pesa', link: '/packages/pesa/', collapsed: true, items: [
+                { text: 'Installation', link: '/packages/pesa/installation' },
+                { text: 'Configuration', link: '/packages/pesa/configuration' },
+                { text: 'M-Pesa Daraja Workflows', link: '/packages/pesa/mpesa' },
+                { text: 'Hosted Checkouts (Pesapal & Stripe)', link: '/packages/pesa/hosted-checkouts' },
+                { text: 'Webhooks & Events', link: '/packages/pesa/webhooks' },
+                { text: 'CLI Commands', link: '/packages/pesa/cli' },
+                { text: 'Testing with Fake Gateway', link: '/packages/pesa/testing' }
+              ]
+            },
             {
               text: 'jengo/broadcasting', link: '/packages/broadcasting/', collapsed: true, items: [
                 { text: 'Installation', link: '/packages/broadcasting/installation' },
