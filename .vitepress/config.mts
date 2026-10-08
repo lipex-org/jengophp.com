@@ -217,9 +217,14 @@ export default defineConfig({
                 { text: 'Webhooks & Callbacks', link: '/packages/pesa/webhooks' },
                 { text: 'Events & Listeners', link: '/packages/pesa/events' },
                 { text: 'Transaction Ledger & Entities', link: '/packages/pesa/ledger' },
+                { text: 'Error Handling & Exceptions', link: '/packages/pesa/errors' },
+                { text: 'Service Locator & Dependency Injection', link: '/packages/pesa/service-locator' },
+                { text: 'Real-Time Payments & Polling', link: '/packages/pesa/real-time-and-polling' },
+                { text: 'Local Development & Tunneling', link: '/packages/pesa/local-development' },
                 { text: 'CLI Commands', link: '/packages/pesa/cli' },
                 { text: 'Custom Gateways & Extensibility', link: '/packages/pesa/custom-gateways' },
-                { text: 'Testing with Fake Gateway', link: '/packages/pesa/testing' }
+                { text: 'Testing with Fake Gateway', link: '/packages/pesa/testing' },
+                { text: 'Production & Go-Live Checklist', link: '/packages/pesa/production-checklist' }
               ]
             },
             {
