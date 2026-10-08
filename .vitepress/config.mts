@@ -4,8 +4,21 @@ export default defineConfig({
   title: "Jengo",
   description: "The CodeIgniter 4 Powerhouse",
 
+  head: [
+    ['link', { rel: 'icon', href: '/jengophp.com/favicon.ico' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/jengophp.com/favicon-32x32.png' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/jengophp.com/favicon-16x16.png' }],
+    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: '/jengophp.com/apple-touch-icon.png' }],
+    ['link', { rel: 'manifest', href: '/jengophp.com/site.webmanifest' }],
+    ['meta', { name: 'theme-color', content: '#ff4c39' }],
+  ],
+
   themeConfig: {
-    logo: '/logo.png', // We can add a logo later
+    logo: {
+      light: '/logo.png',
+      dark: '/logo.png',
+      alt: 'Jengo Logo'
+    },
 
     nav: [
       { text: 'Home', link: '/' },

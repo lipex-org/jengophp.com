@@ -1,0 +1,49 @@
+/**
+ * Jengo Brand Palette
+ * Primary: #ff4c39
+ * Primary-2: #ff7745
+ * Secondary: #a6657a
+ * Secondary-2: #daa94d
+ */
+
+:root {
+  --vp-c-brand-1: #ff4c39;
+  --vp-c-brand-2: #ff7745;
+  --vp-c-brand-3: #e03a27;
+  --vp-c-brand-soft: rgba(255, 76, 57, 0.14);
+
+  --vp-c-brand: #ff4c39;
+  --vp-c-brand-light: #ff7745;
+  --vp-c-brand-lighter: #ff9a6c;
+  --vp-c-brand-dark: #e03a27;
+  --vp-c-brand-darker: #bf2d1c;
+
+  --vp-c-sponsor: #daa94d;
+}
+
+.dark {
+  --vp-c-brand-1: #ff7745;
+  --vp-c-brand-2: #ff4c39;
+  --vp-c-brand-3: #ff9a6c;
+  --vp-c-brand-soft: rgba(255, 119, 69, 0.16);
+
+  --vp-c-brand: #ff7745;
+  --vp-c-brand-light: #ff9a6c;
+  --vp-c-brand-lighter: #ffbba0;
+  --vp-c-brand-dark: #ff4c39;
+  --vp-c-brand-darker: #e03a27;
+}
+
+/* Hero Title Gradient Accent */
+.VPHero .name {
+  background: -webkit-linear-gradient(120deg, #ff4c39 30%, #ff7745, #daa94d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Badge styling */
+.VPBadge.brand {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+  background-color: var(--vp-c-brand-soft);
+}

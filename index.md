@@ -6,6 +6,9 @@ hero:
   name: "JENGO"
   text: "The CodeIgniter 4 Powerhouse"
   tagline: A premium, opinionated ecosystem for rapid CodeIgniter 4 development.
+  image:
+    src: /logo-full.png
+    alt: Jengo Framework
   actions:
     - theme: brand
       text: Get Started
