@@ -3,7 +3,6 @@
 layout: home
 
 hero:
-  name: "JENGO"
   text: "The CodeIgniter 4 Powerhouse"
   tagline: A premium, opinionated ecosystem for rapid CodeIgniter 4 development.
   image:
