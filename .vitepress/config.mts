@@ -141,6 +141,7 @@ export default defineConfig({
                 { text: 'Installation', link: '/packages/queues/installation' },
                 { text: 'Configuration', link: '/packages/queues/configuration' },
                 { text: 'Defining & Dispatching Jobs', link: '/packages/queues/defining-jobs' },
+                { text: 'Deferring Work (defer)', link: '/packages/queues/defer' },
                 { text: 'Workers & CLI Commands', link: '/packages/queues/workers-and-cli' },
                 { text: 'Failed Jobs Management', link: '/packages/queues/failed-jobs' },
                 { text: 'Testing with Queue::fake()', link: '/packages/queues/testing' }
