@@ -22,6 +22,12 @@ class Search extends BaseSearch
     public string $prefix = '';
 
     /**
+     * Whether model indexing/de-indexing should be queued asynchronously (via jengo/queues).
+     * Defaults to true when jengo/queues is available.
+     */
+    public bool $queue = true;
+
+    /**
      * Driver configurations.
      */
     public array $drivers = [

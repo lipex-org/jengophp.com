@@ -19,10 +19,19 @@ Storage::disk('public')
     ->watermark('branding/watermark.png', position: 'bottom-right', opacity: 75)
     ->save('photos/landscape_watermarked.jpg');
 
-// Generating responsive breakpoint sets
+// Generating responsive breakpoint sets synchronously
 $variants = Storage::disk('public')
     ->image('hero.jpg')
     ->generateResponsiveVariants('hero_variants', [
+        'sm' => 640,
+        'md' => 1024,
+        'lg' => 1920,
+    ], format: 'webp', quality: 80);
+
+// Generating responsive breakpoint sets asynchronously in the background via jengo/queues
+Storage::disk('public')
+    ->image('hero.jpg')
+    ->generateResponsiveVariantsAsync('hero_variants', [
         'sm' => 640,
         'md' => 1024,
         'lg' => 1920,

@@ -75,9 +75,54 @@ defer([OrderService::class, 'fulfill'], $order->id, $order->customer_email);
 
 ---
 
-## 5. Behind the Scenes
+## 5. Dependency Injection & Service Auto-Wiring
+
+Closures and callables passed to `defer()` support full **Dependency Injection** without manually calling `service('...')`:
+
+### Automatic Type-Hinting Injection
+Any type-hinted service, repository, or model is automatically resolved from the Jengo Container:
+
+```php
+use App\Services\Mailer;
+use App\Services\AuditLogger;
+
+defer(function (Mailer $mailer, AuditLogger $logger, string $email) {
+    $mailer->sendWelcome($email);
+    $logger->log("Sent welcome email to {$email}");
+}, 'user@example.com');
+```
+
+### CodeIgniter 4 Service Hinting (`#[Service]`)
+You can use the `#[Service]` attribute to explicitly inject any CodeIgniter 4 service by name:
+
+```php
+use Jengo\Base\Container\Attributes\Service;
+
+defer(function (
+    #[Service('logger')] $logger,
+    #[Service('curlrequest')] $client,
+    int $orderId
+) {
+    $logger->info("Sending webhook for order {$orderId}");
+    $client->post('https://api.partner.com/webhook', ['json' => ['order_id' => $orderId]]);
+}, 1001);
+```
+
+### Service Name Convention
+If an untyped parameter name matches a registered CI4 service (e.g. `$logger`, `$curlrequest`, `$session`), the container will auto-inject it via `service($name)`:
+
+```php
+defer(function ($logger, int $userId) {
+    $logger->info("Processing background task for user {$userId}");
+}, 42);
+```
+
+---
+
+## 6. Behind the Scenes
 
 When you call `defer()`, `jengo/queues`:
 1. Wraps the closure and arguments using `Laravel\SerializableClosure` inside a `DeferredCallbackJob`.
 2. Pushes the job to your default configured queue driver (Redis, Database, or Sync).
-3. The background worker daemon (`php spark jengo:queue work`) picks up the job and executes the closure inside an isolated try/catch boundary.
+3. The background worker daemon (`php spark jengo:queue work`) picks up the job and executes the closure through the Jengo DI Container (`Container::call()`).
+

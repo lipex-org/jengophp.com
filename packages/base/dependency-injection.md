@@ -195,6 +195,54 @@ class UserController extends BaseController
 
 ---
 
+### Pattern 5: CodeIgniter 4 Service Injection & `#[Service]` Attribute
+
+To bridge the CodeIgniter 4 developer mental model with Dependency Injection, you don't need to manually invoke `service('...')`. Jengo automatically resolves CI4 services through three mechanisms:
+
+#### 1. Explicit Service Hinting with `#[Service]`
+Annotate any parameter with `#[Service('name')]` to inject any service from `Config\Services`:
+
+```php
+namespace App\Controllers;
+
+use CodeIgniter\HTTP\CURLRequest;
+use CodeIgniter\HTTP\ResponseInterface;
+use Jengo\Base\Container\Attributes\Service;
+use Jengo\Base\Container\Traits\HasContainer;
+use Psr\Log\LoggerInterface;
+
+class IntegrationController extends BaseController
+{
+    use HasContainer;
+
+    public function sync(
+        int $tenantId,
+        #[Service('curlrequest')] CURLRequest $http,
+        #[Service('logger')] LoggerInterface $logger
+    ): ResponseInterface {
+        $logger->info("Syncing tenant {$tenantId}");
+        $response = $http->get("https://api.external.com/tenants/{$tenantId}");
+
+        return response()->setJSON(['synced' => true]);
+    }
+}
+```
+
+#### 2. Service Name Convention (Zero-Config)
+If a parameter name matches a registered CI4 service (such as `$logger`, `$curlrequest`, `$session`, `$queue`, or `$pesa`), the container auto-resolves it via `service($name)`:
+
+```php
+$routes->get('health', inject(function ($logger) {
+    $logger->info("Health check pinged");
+    return response()->setJSON(['status' => 'healthy']);
+}));
+```
+
+#### 3. Automatic Class / Interface Bridge
+If a method or constructor parameter is typehinted with a known CI4 service class or interface, Jengo automatically resolves it from `Config\Services`.
+
+---
+
 ## Global Helpers
 
 Jengo provides intuitive helper functions accessible anywhere in your application:

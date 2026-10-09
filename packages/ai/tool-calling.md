@@ -62,18 +62,50 @@ echo $response->text();
 // The model autonomously calls searchProducts('Pixel'), calculates the discount with applyCoupon('VIP50', 799), and provides a complete final answer!
 ```
 
+### Dependency Injection & Container Autowiring
+
+You can pass class-strings directly to `withToolsFrom()`. The tool class is instantiated via the PSR-11 container (`$this->make()` or `Services::autowire()`), resolving all constructor dependencies automatically:
+
+```php
+namespace App\AiTools;
+
+use App\Repositories\ProductRepository;
+use Jengo\Ai\Attributes\AiTool;
+use Jengo\Ai\Attributes\AiParameter;
+
+class InventoryAssistant
+{
+    public function __construct(
+        protected ProductRepository $products
+    ) {}
+
+    #[AiTool(name: 'findStock', description: 'Look up product stock levels')]
+    public function findStock(#[AiParameter(description: 'SKU or name')] string $query): array
+    {
+        return $this->products->findBySkuOrName($query);
+    }
+}
+
+// Pass the class string directly — constructor dependencies are autowired:
+$answer = ai('Check stock for SKU-100')
+    ->withToolsFrom(InventoryAssistant::class)
+    ->text();
+```
+
 ## Method 2: Fluent Tool Definition
 
-You can also register tools programmatically:
+You can also register tools programmatically using `Tool::make()`. Tool handlers also benefit from dependency injection — any parameters not provided by the AI model can be autowired from the container:
 
 ```php
 use Jengo\Ai\Support\Tool;
+use App\Services\WeatherService;
 
 $weatherTool = Tool::make('getWeather', 'Get the current weather for a city')
     ->parameter('city', 'string', 'The city name, e.g. London')
     ->parameter('unit', 'string', 'Temperature unit: c or f', required: false)
-    ->handler(function (string $city, string $unit = 'c') {
-        return ['city' => $city, 'temp' => 22, 'unit' => $unit, 'condition' => 'Sunny'];
+    ->handler(function (string $city, string $unit = 'c', WeatherService $weather) {
+        // $weather is automatically resolved from the DI container!
+        return $weather->getForecast($city, $unit);
     });
 
 $answer = ai('What is the weather in Tokyo right now?')

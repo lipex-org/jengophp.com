@@ -109,3 +109,21 @@ ai.providers.groq.key = 'gsk_xxxxxxxxxxxxxxxxxxxx'
 ai.defaults.temperature = 0.7
 ai.defaults.max_tokens = 2048
 ```
+
+## Custom Drivers & Extending AI
+
+You can register custom AI driver adapters via `Ai::extend()`. Factory callbacks support full PSR-11 container autowiring:
+
+```php
+use Jengo\Ai\Facades\Ai;
+use App\Ai\CustomLocalDriver;
+use App\Services\LoggingService;
+
+// In a ServiceProvider or bootstrap file:
+Ai::extend('custom_local', function (array $config, LoggingService $logger) {
+    return new CustomLocalDriver($config, $logger);
+});
+
+// Now use the custom driver:
+$response = ai('Hello!')->driver('custom_local')->generate();
+```

@@ -37,3 +37,35 @@ class Pdf extends BasePdf
     ];
 }
 ```
+
+---
+
+## Custom Driver Registration (`Pdf::extend`)
+
+You can register custom PDF drivers (such as WeasyPrint, Gotenberg, or Puppeteer) using `Pdf::extend()`. Driver closures are automatically resolved through the Dependency Injection container:
+
+```php
+use Jengo\Pdf\Pdf;
+use Jengo\Pdf\Contracts\DriverInterface;
+use Jengo\Pdf\PdfDocument;
+
+Pdf::extend('weasyprint', function ($config, $document) {
+    return new class implements DriverInterface {
+        public function render(PdfDocument $doc): string
+        {
+            // Custom WeasyPrint rendering logic
+            return "%PDF-1.4 ...";
+        }
+
+        public function isAvailable(): bool
+        {
+            return true;
+        }
+
+        public function getName(): string
+        {
+            return 'weasyprint';
+        }
+    };
+});
+```
