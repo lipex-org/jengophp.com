@@ -355,7 +355,7 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/jengophp' }
+      { icon: 'github', link: 'https://github.com/lipex-org/jengophp.com' }
     ],
 
     footer: {

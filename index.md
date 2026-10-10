@@ -14,7 +14,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/jengophp
+      link: https://github.com/lipex-org/jengophp.com
 
 features:
   - title: Zero-Config Install
