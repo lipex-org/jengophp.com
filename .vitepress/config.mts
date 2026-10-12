@@ -73,9 +73,13 @@ export default defineConfig({
           items: [
             {
               text: 'jengo/base', link: '/packages/base/', collapsed: true, items: [
-                { text: 'Form Handlers & Validation', link: '/packages/base/validation' },
+                {
+                  text: 'Validation System', link: '/packages/base/validation', collapsed: false, items: [
+                    { text: 'Form Handlers & Validation', link: '/packages/base/validation' },
+                    { text: 'Validation Response Modifiers', link: '/packages/base/response-modifiers' },
+                  ]
+                },
                 { text: 'Entities & ID Obfuscation', link: '/packages/base/entities-validation' },
-                { text: 'Response Modifiers', link: '/packages/base/response-modifiers' },
                 { text: 'Package Installers', link: '/packages/base/installers' },
                 { text: 'The Setup Hub', link: '/packages/base/setups' },
                 { text: 'Dependency Injection', link: '/packages/base/dependency-injection' },

@@ -263,8 +263,8 @@ declare(strict_types=1);
 
 namespace App\Forms;
 
-use Jengo\Base\Modifiers\JsonModifier;
 use Jengo\Base\Validation\FormHandler;
+use Jengo\Base\Validation\Modifiers\JsonModifier;
 
 class ApiRegisterForm extends FormHandler
 {
@@ -280,16 +280,25 @@ class ApiRegisterForm extends FormHandler
 }
 ```
 
+Modifiers can also be specified per endpoint on the `#[Validate]` attribute:
+
+```php
+#[Validate(ApiRegisterForm::class, modifier: JsonModifier::class)]
+public function register() { ... }
+```
+
 ### Available Built-in Modifiers
-- `Jengo\Base\Modifiers\RedirectModifier`: Standard web redirect with flash errors and old input.
-- `Jengo\Base\Modifiers\JsonModifier`: Structured JSON response with HTTP 422 status code.
-- `Jengo\Base\Modifiers\InertiaModifier`: Inertia protocol-compliant redirect with flashed validation errors.
+All modifiers are located in `Jengo\Base\Validation\Modifiers`:
+- `UniversalModifier`: Default smart modifier (resolves Inertia, JSON, or standard browser views dynamically).
+- `InertiaModifier`: Inertia protocol redirect with errors flashed to session (requires `jengo/inertia`).
+- `JsonModifier`: Structured JSON response with HTTP 422 status code.
+- `StandardViewModifier`: Standard server-rendered web redirect with flash errors and old input.
 
 ---
 
 ## 8. Failure Events & Telemetry
 
-When validation fails, `FormHandler` triggers the `jengo.form.failed` event, allowing you to log security audits or dynamically override the response:
+When validation fails, `FormHandler` triggers the `jengo.form.failed` event for telemetry and audit logging:
 
 ```php
 use CodeIgniter\Events\Events;
@@ -303,11 +312,10 @@ Events::on('jengo.form.failed', static function (FormFailedResponseHolder $holde
         'uri'    => $request->getUri()->getPath(),
         'errors' => json_encode($errors),
     ]);
-
-    // Optionally override the response completely:
-    // $holder->setResponse(response()->setStatusCode(400)->setJSON(['custom' => 'payload']));
 });
 ```
+
+> Note: Mutating `$holder->setResponse(...)` is deprecated. Use response modifiers via `#[Validate(..., modifier: ...)]`, `FormHandler::$modifier`, or `Config\Jengo::$validationResponseModifier` instead.
 
 ---
 
