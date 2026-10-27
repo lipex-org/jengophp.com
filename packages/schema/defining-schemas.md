@@ -74,3 +74,51 @@ The `Jengo\Schema\Hydration\Enums\Cast` enum supports automatic conversion:
 - `Cast::STRING`: Cast to string.
 - `Cast::ARRAY`: Decode JSON string into a PHP array.
 - `Cast::DATETIME`: Parse into datetime representation.
+
+## Model Integration
+
+Jengo Schema provides first-party integration with CodeIgniter 4 models using the `HasSchema` trait and `#[UseSchema]` attribute.
+
+```php
+namespace App\Models;
+
+use CodeIgniter\Model;
+use Jengo\Schema\Attributes\UseSchema;
+use Jengo\Schema\Traits\HasSchema;
+use App\Schemas\UserSchema;
+
+#[UseSchema(UserSchema::class)]
+class UserModel extends Model
+{
+    use HasSchema;
+
+    protected $table = 'users';
+}
+```
+
+### Automatic Model Metadata Derivation
+
+When your model uses `HasSchema`, it automatically synchronizes its properties with the linked Schema upon initialization:
+
+1. **`$allowedFields`**: Automatically populated with all non-derived database columns defined in your schema, eliminating the need to manually maintain `$allowedFields` in the model.
+2. **`$returnType`**: Automatically configured with the entity class specified on the schema's `#[Model]` attribute.
+3. **`$primaryKey`**: Aligned with the schema's `#[PrimaryKey]` property.
+
+### Query Gateways
+
+The trait exposes both static and instance gateways directly into Jengo Schema's fluent query API:
+
+```php
+// Static query gateway
+$results = UserModel::schema()
+    ->where('email', $email)
+    ->derive(['profile', 'files'])
+    ->get();
+
+// Instance query gateway
+$model = new UserModel();
+$results = $model->querySchema()
+    ->where('status', 'active')
+    ->paginate(page: 1, limit: 15)
+    ->get();
+```
