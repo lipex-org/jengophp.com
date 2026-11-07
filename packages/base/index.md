@@ -10,7 +10,7 @@
 | :--- | :--- |
 | [Core Architecture](#core-architecture) | The Blueprint UI layout system installed when you bootstrap a Jengo application. |
 | [Dependency Injection](/packages/base/dependency-injection) | PSR-11 container, recursive constructor autowiring, method injection, and `#[Bind]` caching. |
-| [Helpers & Utilities](/packages/base/helpers) | Global helper functions: `page()`, `str()`, `arr()`, `vite_tags()`, `sqids_hash()`, `model_of()` and environment checks. |
+| [Helpers & Utilities](/packages/base/helpers) | Global helper functions: `page()`, `str()`, `arr()`, `vite_tags()`, `resource_path()`, `RESOURCEPATH`, `sqids_hash()`, `model_of()`, and environment checks. |
 | [Entities & Validation](/packages/base/entities-validation) | `BaseEntity` with Sqids ID obfuscation and `ValidatedData` DTOs. |
 | [Core Libraries](/packages/base/libraries) | The fluent `Str`, `Arr`, and `PackageManager` libraries. |
 | [Pest Testing Suite](/packages/base/testing) | Fluent database test runner (`PestDatabaseBuilder`) and `DatabaseTestCase`. |

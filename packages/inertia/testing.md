@@ -79,3 +79,30 @@ You can also inspect props directly using dot-notation:
 $props = $this->inertia($result)->inertiaProps();
 $name = $this->inertia($result)->inertiaProps('user.name');
 ```
+
+---
+
+## 4. Testing Component Existence on Disk
+
+You can ensure that tested page components actually exist in your frontend codebase by configuring `$testing['ensure_page_exists']` in `app/Config/Inertia.php`:
+
+```php
+public array $testing = [
+    'ensure_page_exists' => true,
+    'page_paths' => [
+        resource_path('js/Pages'),
+    ],
+];
+```
+
+When enabled, calling `$page->component('Dashboard')` verifies that the component file physically exists on disk, failing the test if the file is absent:
+
+```php
+$result = $this->get('/dashboard');
+
+$result->assertInertia(fn (AssertableInertia $page) => $page
+    ->component('Dashboard') // Fails if Dashboard component file is missing on disk
+    ->has('totalUsers')
+);
+```
+

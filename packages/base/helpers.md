@@ -64,3 +64,25 @@ $hash = sqids_hash(12345); // e.g. "b9bDbvbxbj"
 $id = sqids_unhash($hash);  // 12345
 ```
 
+### `resource_path(?string $path = null)`
+
+Returns the fully qualified path to the application's `resources` directory, optionally appending a subpath normalized with the system directory separator:
+
+```php
+// Returns the root resources directory path (e.g. "/path/to/project/resources/")
+$baseResources = resource_path();
+
+// Resolves a path within resources
+$jsPages = resource_path('js/Pages');       // "/path/to/project/resources/js/Pages"
+$css = resource_path('css/app.css');        // "/path/to/project/resources/css/app.css"
+```
+
+### `RESOURCEPATH` Constant
+
+`jengo/base` officially introduces and defines the `RESOURCEPATH` constant pointing to the application's `resources/` directory (analogous to CodeIgniter's `APPPATH`, `ROOTPATH`, and `WRITEPATH`):
+
+```php
+defined('RESOURCEPATH') || define('RESOURCEPATH', ROOTPATH . 'resources' . DIRECTORY_SEPARATOR);
+```
+
+

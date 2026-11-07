@@ -2,6 +2,8 @@
 
 Standard CodeIgniter 4 exception handlers return raw PHP HTML views for uncaught errors, which disrupts the client-side SPA navigation cycle. Starting in **v1.1.23**, `jengo/inertia` provides `InertiaExceptionHandler` to seamlessly render your Inertia error components for both SPA requests and direct browser visits with appropriate HTTP status codes.
 
+---
+
 ## Enabling the Exception Handler
 
 In your `app/Config/Exceptions.php` file, return `InertiaExceptionHandler` inside the `handler()` method:
@@ -26,6 +28,8 @@ class Exceptions extends BaseConfig
 ```
 
 Running `php spark jengo:install inertia` automatically publishes this configuration file into `app/Config/Exceptions.php`.
+
+---
 
 ## Configuring Error Pages
 
@@ -61,6 +65,19 @@ class Inertia extends BaseInertia
     public bool $showDebugInDevelopment = false;
 }
 ```
+
+---
+
+## 404 Page Not Found & Missing Component Handling
+
+`InertiaExceptionHandler` seamlessly intercepts all `CodeIgniter\Exceptions\PageNotFoundException` instances and returns your configured 404 error component (or the `error` component):
+
+* **Unmatched routes**: When a visitor accesses an unregistered route.
+* **Missing frontend components**: When [`ensure_page_exists`](./component-existence) is enabled and a requested page component is missing on disk.
+
+In both cases, instead of crashing with an uncaught runtime error or presenting a blank screen, the user is presented with your styled 404 Inertia error component.
+
+---
 
 ## Error Component Props
 

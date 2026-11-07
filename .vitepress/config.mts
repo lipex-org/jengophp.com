@@ -338,6 +338,7 @@ export default defineConfig({
                 { text: 'Inertia v3 Features', link: '/packages/inertia/v3-features' },
                 { text: 'History & Navigation Control', link: '/packages/inertia/history-control' },
                 { text: 'Shared Data', link: '/packages/inertia/shared-data' },
+                { text: 'Component Existence Checks', link: '/packages/inertia/component-existence' },
                 { text: 'The Client Side', link: '/packages/inertia/client-side' },
                 { text: 'Testing', link: '/packages/inertia/testing' },
                 { text: 'SSR Support', link: '/packages/inertia/ssr' },

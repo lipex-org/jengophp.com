@@ -11,13 +11,15 @@ Inertia allows you to create fully client-side rendered, single-page apps (SPAs)
 | Section | Description |
 | :--- | :--- |
 | [Core Concept](#core-concept) | How Inertia intercepts responses to swap page components. |
-| [Basic Usage](./basic-usage) | Returning Inertia responses from controllers. |
+| [Basic Usage](./basic-usage) | Returning Inertia responses from controllers and root template. |
 | [Inertia v3 Features](./v3-features) | Deferred, lazy, once, merge, and always props. |
 | [History & Navigation Control](./history-control) | Encrypt, clear, and preserve history state. |
 | [Shared Data](./shared-data) | Share data across all pages via filters or BaseController. |
+| [Component Existence Checks](./component-existence) | Prevent blank screens with server-side page existence checks. |
+| [Exception Handling & Error Pages](./error-pages) | Render Inertia error components for SPA requests and exceptions. |
+| [Testing](./testing) | Testing Inertia responses, component assertions, and props with Pest/PHPUnit. |
 | [The Client Side](./client-side) | Directory structure and accessing shared props. |
-| [SSR Support](./ssr) | Server-side rendering requirements. |
-| [Exception Handling & Error Pages](./error-pages) | Render Inertia error components for SPA requests. |
+| [SSR Support](./ssr) | Server-side rendering requirements and gateway. |
 
 ---
 
